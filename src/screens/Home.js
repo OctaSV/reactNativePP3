@@ -1,14 +1,53 @@
-import { Text, StyleSheet, View } from 'react-native'
-import React, { Component } from 'react'
+import Post from '../components/Post';
 
-export default class Home extends Component {
-  render() {
-    return (
-      <View>
-        <Text>Home</Text>
-      </View>
-    )
-  }
-}
+import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
+import React, { Component } from 'react';
+import { db } from '../firebase/Config'
+
+class Home extends Component {
+    constructor(){
+        super();
+        this.state = {
+            allPosts: []
+        }
+    }
+
+    componentDidMount(){
+        db.collection('posts')
+        .onSnapshot(docs => {
+            let posts = [];
+            docs.forEach(doc => {
+                posts.push({
+                id: doc.id,
+                data: doc.data()
+                })
+            })
+
+            this.setState({
+                allPosts: posts
+            })
+        })
+    }
+    
+    render() {
+        return (
+        <View>
+
+        {
+
+        this.state.allPosts.length === 0 
+         ? <ActivityIndicator size='large' color='black'/>
+         : <FlatList    data={this.state.allPosts}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+
+        }
+
+        </View>
+        )
+    }
+    }
 
 const styles = StyleSheet.create({})
+
+export default Home
