@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
-import {auth} from '../firebase/config'
+import {auth} from '../firebase/Config'
 
 const styles = StyleSheet.create({
 })
