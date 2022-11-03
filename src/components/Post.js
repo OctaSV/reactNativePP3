@@ -56,6 +56,9 @@ class Post extends Component {
             {this.props.data.owner} - {this.props.data.post}
         </Text>
         <Text>
+            {this.state.commentsCount} comentarios
+        </Text>
+        <Text>
             {this.state.likesCount} likes
         </Text>
 
@@ -75,7 +78,7 @@ class Post extends Component {
             </TouchableOpacity>
         }
 
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, comentarito: this.props.data.comments})}>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments})}>
             <Text>
                 Agregar comentario
             </Text>

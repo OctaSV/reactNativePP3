@@ -1,14 +1,78 @@
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import React, { Component } from 'react'
+import { auth, db } from '../firebase/Config'
+import firebase from 'firebase'
 
-export default class Comments extends Component {
+class Comments extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+            comentarios: [],
+            comment:'',
+            commentCount: props.route.params.commentsData.length
+        }
+    }
+
+    componentDidMount(){
+      db.collection('posts')
+            .doc(this.props.route.params.id)
+            .onSnapshot(doc => {
+                this.setState({
+                    comentarios:doc.data().comments
+                })
+            })
+    }
+
+    comment(comentario){
+      const commentAGuardar ={
+        owner: auth.currentUser.email,
+        createdAt: Date.now(),
+        description: comentario
+    }
+
+        db.collection('posts').doc(this.props.route.params.id).update({
+            comments: firebase.firestore.FieldValue.arrayUnion(commentAGuardar)
+        })
+        .then(() => {
+            this.setState({
+                comment: '', 
+                commentCount: this.state.commentCount + 1
+            });
+        })
+        .catch(err => console.log(err))
+    }
+
   render() {
     return (
       <View>
-        <Text>Comments</Text>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')}>
+          <Text>
+            Volver
+          </Text>
+        </TouchableOpacity>
+        <Text>
+            {this.state.commentCount} comentarios
+        </Text>
+
+        <FlatList
+            data={this.state.comentarios}
+            keyExtractor={( item ) => item.createdAt.toString()}
+            renderItem={({item}) => <Text>Comentario de {item.owner}: {item.description}</Text>} />
+
+        <TextInput
+          keyboardType='default'
+          placeholder='Tu comentario!'
+          onChangeText={ text => this.setState({comment:text}) }
+          value={this.state.comment} />
+
+        <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+          <Text>
+            Subir
+          </Text>
+        </TouchableOpacity>
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({})
+export default Comments
