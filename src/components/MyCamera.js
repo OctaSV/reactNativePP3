@@ -46,9 +46,11 @@ class MyCamera extends Component {
                 ref.getDownloadURL()
                 .then(url => this.props.onImageUpload(url))
                 .catch(error => console.log(error))
-            })
+            }
+            )
             .catch(error => console.log(error))
-        })
+        }
+        )
         .catch(error => console.log(error))
     }
 
@@ -73,7 +75,7 @@ class MyCamera extends Component {
                     <View>
                         <TouchableOpacity onPress={()=> this.savePicture()}>
                             <Text>
-                                Guardar
+                                Confirmar
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={()=> this.discardPicture()}>

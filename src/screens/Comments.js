@@ -45,19 +45,26 @@ class Comments extends Component {
   render() {
     return (
       <View>
+
         <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')}>
           <Text>
             Volver
           </Text>
         </TouchableOpacity>
-        <Text>
-            {this.state.commentCount} comentarios
-        </Text>
 
-        <FlatList
-            data={this.state.comentarios}
-            keyExtractor={( item ) => item.createdAt.toString()}
-            renderItem={({item}) => <Text>Comentario de {item.owner}: {item.description}</Text>} />
+      {this.state.commentCount == 0 
+      ? <Text>Aún no hay comentarios</Text> 
+      : <>
+          <Text>
+            {this.state.commentCount} comentarios
+          </Text>
+
+          <FlatList
+                data={this.state.comentarios}
+                keyExtractor={( item ) => item.createdAt.toString()}
+                renderItem={({item}) => <Text>Comentario de {item.owner}: {item.description}</Text>} /> 
+        </>
+      }
 
         <TextInput
           keyboardType='default'
@@ -70,9 +77,14 @@ class Comments extends Component {
             Subir
           </Text>
         </TouchableOpacity>
+
       </View>
     )
   }
 }
 
 export default Comments
+
+//TAREAS
+// 1. ORDENAR LOS COMENTARIOS
+// 2. ESTILOS

@@ -96,3 +96,7 @@ const styles = StyleSheet.create({
   })
 
 export default Post
+
+//TAREAS
+// 1. QUE CAMBIE EL NUMERO DE COMENTARIOS Y ELIMINAR POSTEO
+// 2. ESTILOS

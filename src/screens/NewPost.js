@@ -9,15 +9,21 @@ class NewPost extends Component {
     super(props)
     this.state={
         posteo:'',
-        url: ''
+        urlFoto: ''
     }
 }
 
-newPost(posteo, url){
+onImageUpload(url){
+  this.setState({
+    urlFoto: url
+})
+}
+
+newPost(posteo){
   db.collection('posts').add({
     owner: auth.currentUser.email,
     post: posteo,
-    url: url,
+    url: this.state.urlFoto,
     createdAt: Date.now(),
     likes:[],
     comments: []
@@ -31,16 +37,9 @@ newPost(posteo, url){
   .catch (err => console.log(err))
 }
 
-onImageUpload(url){
-  this.newPost(this.state.posteo, url)
-}
-
   render() {
     return (
       <>
-        <Text>
-            Estas por crear un nuevo post!!!
-        </Text>
         <MyCamera onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
         <TextInput
           stlye={styles.form}
@@ -49,11 +48,14 @@ onImageUpload(url){
           onChangeText={ text => this.setState({posteo:text}) }
           value={this.state.posteo} />
 
-        <TouchableOpacity onPress={() => this.newPost(this.state.posteo)}>
-          <Text>
-            Subir
-          </Text>
-        </TouchableOpacity>
+          {this.state.urlFoto == '' && this.state.posteo == '' 
+          ? <Text>Aun no puedes subir el posteo, tomate una foto y ponele descripcion!</Text>
+          : <TouchableOpacity onPress={() => this.newPost(this.state.posteo)}>
+              <Text>
+                Subir
+              </Text>
+            </TouchableOpacity>
+          }
     </>
     )
   }
