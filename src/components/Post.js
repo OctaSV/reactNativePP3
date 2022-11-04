@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { Text, View, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native'
 import React, { Component } from 'react'
 import {db, auth} from '../firebase/Config'
 import firebase from 'firebase'
@@ -11,9 +11,6 @@ class Post extends Component {
             commentsCount: props.data.comments.length,
             myLike: false
         }
-
-        
-
     }
 
     componentDidMount(){
@@ -48,6 +45,23 @@ class Post extends Component {
             })
         })
         .catch(err => console.log(err))
+    }
+
+    deletePost(){
+
+        db.collection('posts').doc(this.props.id).delete()
+
+        //Con alertas, funciona en el celular no en la web
+
+        // Alert.alert(`Eliminacion de posteo`, 'Estas seguro que desas eliminarlo?', [
+        //     {
+        //         text: 'Cancel'
+        //     },
+        //     {
+        //         text:'Eliminar',
+        //         onPress: () => db.collection('posts').doc(this.props.id).delete()
+        //     }
+        // ])
     }
 
   render() {
@@ -86,6 +100,15 @@ class Post extends Component {
                 Agregar comentario
             </Text>
         </TouchableOpacity>
+        
+        {
+            auth.currentUser.email === this.props.data.owner
+            ?   <TouchableOpacity onPress={() => this.deletePost()}>
+                    <Text>Eliminar posteo</Text>
+                </TouchableOpacity>
+            : <Text>No puedes borrar un post que no es tuyo!</Text>
+        }
+
             </View>
     )
   }
