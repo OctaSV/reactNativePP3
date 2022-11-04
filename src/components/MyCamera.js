@@ -17,8 +17,7 @@ class MyCamera extends Component {
         Camera.requestCameraPermissionsAsync()
         .then(response => {
             this.setState({
-                permission:true,
-                urlFoto:''
+                permission:true
             })
         })
         .catch(error => console.log(error))

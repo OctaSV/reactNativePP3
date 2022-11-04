@@ -1,6 +1,6 @@
 import Post from '../components/Post';
 
-import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native';
 import React, { Component } from 'react';
 import { db } from '../firebase/Config'
 
@@ -8,7 +8,8 @@ class Home extends Component {
     constructor(){
         super();
         this.state = {
-            allPosts: []
+            allPosts: [],
+            loader: true
         }
     }
 
@@ -24,7 +25,8 @@ class Home extends Component {
             })
 
             this.setState({
-                allPosts: posts
+                allPosts: posts,
+                loader: false
             })
         })
     }
@@ -34,13 +36,13 @@ class Home extends Component {
         <View>
 
         {
-
-        this.state.allPosts.length === 0 
-         ? <ActivityIndicator size='large' color='black'/>
-         : <FlatList    data={this.state.allPosts}
+        this.state.loader 
+            ? <ActivityIndicator size='large' color='black'/>  
+            : this.state.allPosts.length === 0 
+                ? <Text>Aun no hay posteos </Text> 
+                : <FlatList     data={this.state.allPosts}
                         keyExtractor={item => item.id.toString()}
                         renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
-
         }
 
         </View>

@@ -11,6 +11,9 @@ class Post extends Component {
             commentsCount: props.data.comments.length,
             myLike: false
         }
+
+        
+
     }
 
     componentDidMount(){
