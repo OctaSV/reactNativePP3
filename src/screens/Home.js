@@ -33,16 +33,18 @@ class Home extends Component {
     
     render() {
         return (
-        <View>
+        <View style={styles.flatlist}>
 
         {
         this.state.loader 
             ? <ActivityIndicator size='large' color='black'/>  
             : this.state.allPosts.length === 0 
                 ? <Text>Aun no hay posteos </Text> 
-                : <FlatList     data={this.state.allPosts}
-                        keyExtractor={item => item.id.toString()}
-                        renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+                : <FlatList 
+                    style={styles.flatlist}    
+                    data={this.state.allPosts}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
         }
 
         </View>
@@ -50,6 +52,10 @@ class Home extends Component {
     }
     }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    flatlist: {
+        flex: 1
+    }
+})
 
 export default Home

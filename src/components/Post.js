@@ -12,7 +12,10 @@ class Post extends Component {
             myLike: false
         }
     }
-
+    userProfile() {
+        this.props.navigation.navigate('Profile', {infoUser: this.props.data.owner})
+    }
+    
     componentDidMount(){
         if (this.props.data.likes.includes(auth.currentUser.email)) {
             this.setState({
@@ -69,9 +72,9 @@ class Post extends Component {
       <View>
         <Image style={styles.imagen} source={this.props.data.url}/>
 
-        <Text>
-            {this.props.data.owner} - {this.props.data.post}
-        </Text>
+        
+          <TouchableOpacity onPress={()=> this.userProfile()}>{this.props.data.owner}</TouchableOpacity>   <Text>- {this.props.data.post} </Text>
+       
         <Text>
             {this.state.commentsCount} comentarios
         </Text>
