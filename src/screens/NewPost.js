@@ -33,8 +33,8 @@ newPost(posteo, urlFoto){
   .then(() => {
     this.props.navigation.navigate('Home')
     this.setState({
-      compCamara: true,
-      posteo: ''
+      posteo: '',
+      compCamara: true
     })
   })
   .catch (err => console.log(err))
