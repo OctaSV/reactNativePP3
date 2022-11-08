@@ -42,11 +42,16 @@ class Comments extends Component {
         .catch(err => console.log(err))
     }
 
+    volver(){
+      this.props.route.params.setCommentsCount(this.state.commentCount);
+      this.props.navigation.navigate('Home')
+    }
+
   render() {
     return (
       <View>
 
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => this.volver()}>
           <Text>
             Volver
           </Text>

@@ -51,11 +51,6 @@ class MyCamera extends Component {
         }
         )
         .catch(error => console.log(error))
-
-        this.setState({
-            mostrarCamara: false
-        })
-
     }
 
     discardPicture(){

@@ -64,6 +64,12 @@ class Post extends Component {
         // ])
     }
 
+    setCommentsCount(num) {
+        this.setState({
+            commentsCount: num
+        })
+    }
+
   render() {
     return (
       <View>
@@ -95,7 +101,7 @@ class Post extends Component {
             </TouchableOpacity>
         }
 
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments})}>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})}>
             <Text>
                 Agregar comentario
             </Text>
@@ -106,7 +112,11 @@ class Post extends Component {
             ?   <TouchableOpacity onPress={() => this.deletePost()}>
                     <Text>Eliminar posteo</Text>
                 </TouchableOpacity>
-            : <Text>No puedes borrar un post que no es tuyo!</Text>
+            :   <TouchableOpacity onPress={() => console.log('Denunciaste gorra!')}>
+                    <Text>
+                        Denunciar posteo --- desarrollo
+                    </Text>
+                </TouchableOpacity>
         }
 
             </View>
