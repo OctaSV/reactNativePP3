@@ -1,12 +1,11 @@
-import Post from '../components/Post';
-
-import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native';
 import React, { Component } from 'react';
-import { db } from '../firebase/Config'
+import Post from '../components/Post';
+import { StyleSheet, View, FlatList, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import { db, auth } from '../firebase/Config'
 
 class Home extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             allPosts: [],
             loader: true
@@ -30,26 +29,36 @@ class Home extends Component {
             })
         })
     }
+
+    logOut(){
+        auth.signOut()
+    }
     
     render() {
-        return (
-        <View>
-
-        {
-        this.state.loader 
-            ? <ActivityIndicator size='large' color='black'/>  
-            : this.state.allPosts.length === 0 
-                ? <Text>Aun no hay posteos </Text> 
-                : <FlatList     data={this.state.allPosts}
-                        keyExtractor={item => item.id.toString()}
-                        renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
-        }
-
-        </View>
+        return (  
+            this.state.loader ? 
+                    <ActivityIndicator size='large' color='black'/>  
+                :
+                    <>
+                        <View>
+                            <Text style={styles.title}>FANATIC</Text>
+                            <TouchableOpacity onPress={ ()=> this.logOut()}>
+                                <Text>Log out</Text>
+                            </TouchableOpacity>
+                        </View>
+                        {
+                            this.state.allPosts.length === 0 ? 
+                                    <Text>Aun no hay posteos </Text> 
+                                : 
+                                    <FlatList data={this.state.allPosts}
+                                        keyExtractor={item => item.id.toString()}
+                                        renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+                        }
+                    </>
         )
     }
-    }
+}
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({title: {fontSize: 20}})
 
-export default Home
+export default Home;

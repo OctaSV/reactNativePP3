@@ -20,6 +20,6 @@ function MainNavigation() {
       </NavigationContainer>
   
     )
-  }
+}
 
-  export default MainNavigation
+export default MainNavigation;
