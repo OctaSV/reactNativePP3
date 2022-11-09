@@ -35,30 +35,30 @@ class Home extends Component {
     }
     
     render() {
-        return (  
-            this.state.loader ? 
-                    <ActivityIndicator size='large' color='black'/>  
-                :
-                    <>
-                        <View>
-                            <Text style={styles.title}>FANATIC</Text>
-                            <TouchableOpacity onPress={ ()=> this.logOut()}>
-                                <Text>Log out</Text>
-                            </TouchableOpacity>
-                        </View>
-                        {
-                            this.state.allPosts.length === 0 ? 
-                                    <Text>Aun no hay posteos </Text> 
-                                : 
-                                    <FlatList data={this.state.allPosts}
-                                        keyExtractor={item => item.id.toString()}
-                                        renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
-                        }
-                    </>
+        return (
+        <View style={styles.flatlist}>
+
+        {
+        this.state.loader 
+            ? <ActivityIndicator size='large' color='black'/>  
+            : this.state.allPosts.length === 0 
+                ? <Text>Aun no hay posteos </Text> 
+                : <FlatList 
+                    style={styles.flatlist}    
+                    data={this.state.allPosts}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+        }
+
+        </View>
         )
     }
 }
 
-const styles = StyleSheet.create({title: {fontSize: 20}})
+const styles = StyleSheet.create({
+    flatlist: {
+        flex: 1
+    }
+})
 
 export default Home;
