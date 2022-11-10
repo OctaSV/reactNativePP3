@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
-import {auth, GoogleAuthProvider} from '../firebase/Config';
+import firebase from 'firebase';
+import {auth, GoogleProvider} from '../firebase/Config';
+import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
 
 class Login extends Component{
     constructor(props){
@@ -33,19 +35,23 @@ class Login extends Component{
     }
 
     signGoogle(){
-        auth.signInWithPopup(GoogleAuthProvider)
-        .then((result) => {
-            console.log(result)
-            this.setState({
-                email: result,
-                password: result,
-                logued: true
-            })
-        })
-        .then(() => (
-            this.state.logued !== false ? this.props.navigation.navigate('Home') : false    
-        ))
-        .catch(error => console.log(error)) 
+        firebase.auth()
+        .signInWithPopup(GoogleProvider)
+        .then((result) => {      
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          // The signed-in user info.
+          const user = result.user;
+          // ...
+        }).catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          const credential = error.credential;
+          // ...
+        });
     }
 
     render(){
@@ -60,7 +66,7 @@ class Login extends Component{
                                 <Text style={styles.title}>Welcome fanatic</Text>
                             </TouchableOpacity>
                             <View style={styles.box}>
-                                <Text style={styles.titleBox}>FANATIC</Text>
+                                <Text style={styles.titleBox}>FNATIC</Text>
                                 <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
                                 <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
                                 <TouchableOpacity onPress={() => this.signIn(this.state.email, this.state.password)} >
