@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
-import {auth} from '../firebase/Config'
+import {auth, db} from '../firebase/Config'
 
 class Register extends Component{
     constructor(props){
@@ -14,12 +14,23 @@ class Register extends Component{
         }
     }
 
-    signUp(email, password){
+    signUp(email, password, biography, username){
         auth.createUserWithEmailAndPassword(email, password)
         .then(() => this.setState({loged: true}))
+       .then(() => {
+        return(
+           db.collection('users').add({
+            username: username,
+            email: email,
+            createdAt: Date.now(),
+            biography: biography, 
+           }) 
+        )
+       })
         .then(() => (
             this.state.logued === true ? this.props.navigation.navigate('Login') : false    
-        ))
+        )) 
+
         .catch(error => alert(error))
     }
 
@@ -33,7 +44,7 @@ class Register extends Component{
                     <TextInput style={styles.field} keyboardType='default' placeholder='username' onChangeText={text => this.setState({userName: text})} value={this.state.userName}/>
                     <TextInput style={styles.field} keyboardType='default' placeholder='biography' onChangeText={text => this.setState({biography: text})} value={this.state.biography}/>
                     <TextInput style={styles.field} keyboardType='default' placeholder='photo'/>
-                    <TouchableOpacity onPress={() => this.signUp(this.state.email, this.state.password)} style={styles.submitBox}>
+                    <TouchableOpacity onPress={() => this.signUp(this.state.email, this.state.password, this.state.biography, this.state.userName)} style={styles.submitBox}>
                         <Text style={styles.submit}> Submit </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={ ()=> this.props.navigation.navigate('Login')}>
