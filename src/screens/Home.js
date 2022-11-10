@@ -1,12 +1,11 @@
-import Post from '../components/Post';
-
-import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native';
 import React, { Component } from 'react';
-import { db } from '../firebase/Config'
+import Post from '../components/Post';
+import { StyleSheet, View, FlatList, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import { db, auth } from '../firebase/Config'
 
 class Home extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             allPosts: [],
             loader: true
@@ -30,32 +29,50 @@ class Home extends Component {
             })
         })
     }
+
+    logOut(){
+        auth.signOut()
+    }
     
     render() {
         return (
-        <View style={styles.flatlist}>
-
-        {
-        this.state.loader 
-            ? <ActivityIndicator size='large' color='black'/>  
-            : this.state.allPosts.length === 0 
-                ? <Text>Aun no hay posteos </Text> 
-                : <FlatList 
-                    style={styles.flatlist}    
-                    data={this.state.allPosts}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
-        }
-
-        </View>
+            <React.Fragment>
+                {
+                this.state.loader ? 
+                    <ActivityIndicator size='large' color='#5c0931'/>  
+                : 
+                    <View style={styles.container}>
+                        <Text style={styles.pageTitle}>FNATIC</Text>
+                        {this.state.allPosts.length === 0 ? 
+                            <Text>Aun no hay posteos </Text>
+                        : 
+                            <FlatList 
+                            style={styles.flatlist}    
+                            data={this.state.allPosts}
+                            keyExtractor={item => item.id.toString()}
+                            renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+                        }
+                    </View>
+                }
+            </React.Fragment>
         )
     }
-    }
+}
 
 const styles = StyleSheet.create({
+    container: {
+        height: '100vh',
+        width: '100vw'
+    },
+    pageTitle: {
+        color: 'white',
+        fontSize: 40,
+        padding: 15,
+        backgroundColor: '#5c0931'
+    },
     flatlist: {
-        flex: 1
+        flex: 1,
     }
 })
 
-export default Home
+export default Home;

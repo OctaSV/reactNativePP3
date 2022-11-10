@@ -18,8 +18,7 @@ function MainNavigation() {
             <Stack.Screen name="Comments" component={Comments} options={ { headerShown: false } }/>
         </Stack.Navigator>
       </NavigationContainer>
-  
     )
-  }
+}
 
-  export default MainNavigation
+export default MainNavigation;

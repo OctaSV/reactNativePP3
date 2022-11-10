@@ -13,7 +13,7 @@ class Post extends Component {
         }
     }
     userProfile() {
-        this.props.navigation.navigate('Profile', {infoUser: this.props.data.owner})
+        this.props.navigation.navigate('Profile', {user: this.props.data.owner})
     }
     
     componentDidMount(){
@@ -77,10 +77,10 @@ class Post extends Component {
     return (
       <View>
         <Image style={styles.imagen} source={this.props.data.url}/>
-
-        
-          <TouchableOpacity onPress={()=> this.userProfile()}>{this.props.data.owner}</TouchableOpacity>   <Text>- {this.props.data.post} </Text>
-       
+        <TouchableOpacity onPress={()=> this.userProfile()}><Text>{this.props.data.owner}</Text></TouchableOpacity>   
+        <Text> 
+            Producto: {this.props.data.post}
+        </Text>
         <Text>
             {this.state.commentsCount} comentarios
         </Text>
@@ -121,8 +121,7 @@ class Post extends Component {
                     </Text>
                 </TouchableOpacity>
         }
-
-            </View>
+    </View>
     )
   }
 }

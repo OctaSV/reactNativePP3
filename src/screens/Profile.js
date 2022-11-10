@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native';
+import { StyleSheet, View, FlatList, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import React, { Component } from 'react';
 import { auth, db } from '../firebase/Config'
 import Post from '../components/Post';
@@ -9,16 +9,12 @@ export default class Profile extends Component {
     this.state = {
       userInfo: [],
       loader: true,
-      userData: ''
+      user: ''
     }
-}
+  }
 
-
-
-
-
-  getUserData(data) {
-    db.collection("posts").where("owner", '==', data).onSnapshot((docs) => {
+  getUserData(user) {
+    db.collection("posts").where("owner", '==', user).onSnapshot((docs) => {
       let userInfo = [];
       docs.forEach((doc) => {
         userInfo.push({ 
@@ -34,42 +30,40 @@ export default class Profile extends Component {
     }); 
   }
 
+  logOut(){
+    auth.signOut()
+    this.props.navigation.navigate('Login')
+  }
+
   componentDidMount() {
-    this.props.route.params.infoUser !== undefined ? this.state.userData = this.props.route.params.infoUser : this.state.userData = auth.currentUser.email
-    this.getUserData(this.state.userData)  //se ejecuta una vez 
-   
-  
+    this.getUserData(this.props.route.params.user)
   }
 
   componentDidUpdate(){
-    this.props.route.params.infoUser !== undefined ? this.state.userData = this.props.route.params.infoUser : this.state.userData = auth.currentUser.email
-    this.getUserData(this.state.userData) //se actualiza con la nueva prop y toma los datos del usuario traido
-    
+    this.getUserData(this.props.route.params.user)
   }
    
   
   render() {
-    
-    console.log(auth.currentUser.providerData)
-    console.log(auth.currentUser.providerData)
-    console.log(auth.currentUser.providerData)
-    console.log(auth.currentUser.providerData)
-    console.log(auth.currentUser.providerData)
-    console.log(auth.currentUser.providerData)
-    console.log(auth.currentUser.providerData)
     return (
-      <View>
+      <React.Fragment>
       {
         this.state.loader ? 
           <ActivityIndicator size='large' color='black'/>        
         :      
-            <FlatList 
-            data={this.state.userInfo}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
-        }
+            <>            
+              <FlatList 
+              data={this.state.userInfo}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+              <TouchableOpacity onPress={ ()=> this.logOut()}>
+                <Text style={styles.title}>logOut</Text>
+              </TouchableOpacity>
+            </>
+      }
       
-      </View>
+
+      </React.Fragment>
     )
   }
 }
