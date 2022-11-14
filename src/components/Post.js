@@ -13,7 +13,7 @@ class Post extends Component {
         }
     }
     userProfile() {
-        this.props.navigation.navigate('Profile', {user: this.props.data.owner})
+        this.props.navigation.navigate('Go Back', {user: this.props.data.owner})
     }
     
     componentDidMount(){
