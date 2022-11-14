@@ -2,6 +2,7 @@ import { Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import React, { Component } from 'react'
 import { auth, db } from '../firebase/Config'
 import firebase from 'firebase'
+import { AntDesign } from '@expo/vector-icons';
 
 class Comments extends Component {
     constructor(props){
@@ -52,9 +53,7 @@ class Comments extends Component {
       <View>
 
         <TouchableOpacity onPress={() => this.volver()}>
-          <Text>
-            Volver
-          </Text>
+          <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
 
       {this.state.commentCount == 0 

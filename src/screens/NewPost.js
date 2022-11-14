@@ -3,6 +3,7 @@ import MyCamera from '../components/MyCamera'
 import React, { Component } from 'react';
 import { Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { db, auth } from '../firebase/Config'
+import { AntDesign } from '@expo/vector-icons';
 
 class NewPost extends Component {
   constructor(props){
@@ -55,10 +56,8 @@ newPost(posteo, urlFoto){
         onChangeText={ text => this.setState({posteo:text}) }
         value={this.state.posteo} />
         <TouchableOpacity onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
-            <Text>
-              Subir
-            </Text>
-          </TouchableOpacity>
+          <Text>Subir</Text> <AntDesign name="upload" size={24} color="black" />
+        </TouchableOpacity>
         </>
       }
     </>
