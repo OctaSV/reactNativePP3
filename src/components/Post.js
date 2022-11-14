@@ -2,6 +2,8 @@ import { Text, View, TouchableOpacity, Image, StyleSheet, Alert } from 'react-na
 import React, { Component } from 'react'
 import {db, auth} from '../firebase/Config'
 import firebase from 'firebase'
+import { FontAwesome } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons';
 
 class Post extends Component {
     constructor(props){
@@ -67,40 +69,43 @@ class Post extends Component {
         // ])
     }
 
+    setCommentsCount(num) {
+        this.setState({
+            commentsCount: num
+        })
+    }
+
   render() {
     return (
       <View>
+        <TouchableOpacity onPress={()=> this.userProfile()}><FontAwesome name="user" size={24} color="black" /><Text>{this.props.data.owner}</Text></TouchableOpacity> 
         <Image style={styles.imagen} source={this.props.data.url}/>
-        <TouchableOpacity onPress={()=> this.userProfile()}><Text>{this.props.data.owner}</Text></TouchableOpacity>   
-        <Text> 
+        <Text style={styles.text}> 
             Producto: {this.props.data.post}
         </Text>
-        <Text>
-            {this.state.commentsCount} comentarios
-        </Text>
-        <Text>
-            {this.state.likesCount} likes
-        </Text>
-
         {
             this.state.myLike 
             ? 
             <TouchableOpacity onPress={() => this.dislike()}>
+                <Ionicons name="heart-sharp" size={24} color="black" />
                 <Text>
-                    Dislike
+                    {this.state.likesCount} likes
                 </Text>
             </TouchableOpacity>
+            
             :
             <TouchableOpacity onPress={() => this.like()}>
+                <Ionicons name="heart-outline" size={24} color="black" />
                 <Text>
-                    Like
+                    {this.state.likesCount} likes
                 </Text>
             </TouchableOpacity>
         }
 
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments})}>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})}>
+            <FontAwesome name="comment-o" size={24}  />
             <Text>
-                Agregar comentario
+                {this.state.commentsCount} comentarios
             </Text>
         </TouchableOpacity>
         
@@ -109,7 +114,11 @@ class Post extends Component {
             ?   <TouchableOpacity onPress={() => this.deletePost()}>
                     <Text>Eliminar posteo</Text>
                 </TouchableOpacity>
-            : <Text>No puedes borrar un post que no es tuyo!</Text>
+            :   <TouchableOpacity onPress={() => console.log('Denunciaste gorra!')}>
+                    <Text>
+                        Denunciar posteo --- desarrollo
+                    </Text>
+                </TouchableOpacity>
         }
     </View>
     )
@@ -118,8 +127,11 @@ class Post extends Component {
 
 const styles = StyleSheet.create({
     imagen:{
-       height: 100,
-       width: 100 
+       height: '250px',
+       width: '250px' 
+    },
+    text: {
+        fontSize: '20px'
     }
   })
 

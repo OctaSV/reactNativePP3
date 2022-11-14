@@ -2,6 +2,10 @@ import React, {Component} from 'react'
 import {Camera} from 'expo-camera'
 import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native'
 import {storage} from '../firebase/Config'
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+
 
 class MyCamera extends Component {
     constructor(props){
@@ -51,11 +55,6 @@ class MyCamera extends Component {
         }
         )
         .catch(error => console.log(error))
-
-        this.setState({
-            mostrarCamara: false
-        })
-
     }
 
     discardPicture(){
@@ -78,14 +77,10 @@ class MyCamera extends Component {
                     />
                     <View>
                         <TouchableOpacity onPress={()=> this.savePicture()}>
-                            <Text>
-                                Confirmar
-                            </Text>
+                            <FontAwesome5 name="arrow-alt-circle-right" size={24} color="black" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={()=> this.discardPicture()}>
-                            <Text>
-                                Descartar
-                            </Text>
+                            <Entypo name="cross" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -98,7 +93,7 @@ class MyCamera extends Component {
                     />
                     <View style={styles.buttons}>
                         <TouchableOpacity onPress={()=> this.takePicture()}>
-                            <Text>Tomar la foto</Text>
+                            <Ionicons name="radio-button-on-outline" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
                 </View>
