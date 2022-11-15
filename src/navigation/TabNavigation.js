@@ -33,9 +33,9 @@ class TabNavigation extends Component {
         console.log(auth)
         return (
             <Tab.Navigator screenOptions={ { tabBarShowLabel: false, /*tabBarStyle: {flex :1, width: '5vw', height: '10vh', position: screenTop}, tabBarActiveTintColor: 'red'*/ tabBarInactiveTintColor: 'green'} }>
-                <Tab.Screen name="Home" component={ Home } listeners={{tabPress: () => this.userProfile()}} options={{tabBarIcon: () => <FontAwesome name="home" size={24} color="black" />, headerShown: false, tabBarActiveTintColor: 'red', tabBarInactiveTintColor: 'green'}}/>
-                <Tab.Screen name="NewPost" component={ NewPost } options={{tabBarIcon: () => <FontAwesome name="plus" size={24} color="black" />, headerShown: false}}/> 
-                <Tab.Screen name="Profile" component={ Profile } listeners={{tabPress: () => this.userProfile()}} options={{tabBarIcon: () => <FontAwesome name="user" size={24} color="black" />, headerShown: false}}/>
+                <Tab.Screen name="Home" component={ Home } listeners={{tabPress: () => this.userProfile()}} options={{tabBarIcon: () => <FontAwesome name="home" size={24} color="#5c0931" />, headerShown: false, tabBarActiveTintColor: 'red', tabBarInactiveTintColor: 'green'}}/>
+                <Tab.Screen name="NewPost" component={ NewPost } options={{tabBarIcon: () => <FontAwesome name="plus" size={24} color="#5c0931" />, headerShown: false}}/> 
+                <Tab.Screen name="Profile" component={ Profile } listeners={{tabPress: () => this.userProfile()}} options={{tabBarIcon: () => <FontAwesome name="user" size={24} color="#5c0931" />, headerShown: false}}/>
             </Tab.Navigator>
         //Agregar foto usuario
         )

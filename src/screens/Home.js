@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     },
     flatlist: {
         flex: 1,
-        margin: 'auto'
+        margin: 'auto',
+        width: '100%'
 
     }
 })

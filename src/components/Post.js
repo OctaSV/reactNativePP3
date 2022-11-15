@@ -1,9 +1,10 @@
-import { Text, View, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native'
+import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, TextInput } from 'react-native'
 import React, { Component } from 'react'
 import {db, auth} from '../firebase/Config'
 import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 class Post extends Component {
     constructor(props){
@@ -11,7 +12,9 @@ class Post extends Component {
         this.state = {
             likesCount: props.data.likes.length,
             commentsCount: props.data.comments.length,
-            myLike: false
+            myLike: false,
+            comentarios: [],
+            comment:''
         }
     }
     userProfile() {
@@ -23,7 +26,16 @@ class Post extends Component {
             this.setState({
                 myLike: true
             })
-        }
+        };
+
+        db.collection('posts')
+            .doc(this.props.id)
+            .onSnapshot(doc => {
+                this.setState({
+                    comentarios:doc.data().comments
+                })
+            })
+
     }
 
     like(){
@@ -53,20 +65,7 @@ class Post extends Component {
     }
 
     deletePost(){
-
         db.collection('posts').doc(this.props.id).delete()
-
-        //Con alertas, funciona en el celular no en la web
-
-        // Alert.alert(`Eliminacion de posteo`, 'Estas seguro que desas eliminarlo?', [
-        //     {
-        //         text: 'Cancel'
-        //     },
-        //     {
-        //         text:'Eliminar',
-        //         onPress: () => db.collection('posts').doc(this.props.id).delete()
-        //     }
-        // ])
     }
 
     setCommentsCount(num) {
@@ -75,68 +74,176 @@ class Post extends Component {
         })
     }
 
+    comment(comentario){
+        const commentAGuardar ={
+          owner: auth.currentUser.email,
+          createdAt: Date.now(),
+          description: comentario
+      }
+  
+          db.collection('posts').doc(this.props.id).update({
+              comments: firebase.firestore.FieldValue.arrayUnion(commentAGuardar)
+          })
+          .then(() => {
+              this.setState({
+                  comment: '',
+                  commentsCount: this.state.commentsCount + 1
+              });
+          })
+          .catch(err => console.log(err))
+      }
+
+      navegarComment(){
+        this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})
+      }
+
   render() {
     return (
-      <View>
-        <TouchableOpacity onPress={()=> this.userProfile()}><FontAwesome name="user" size={24} color="black" /><Text>{this.props.data.owner}</Text></TouchableOpacity> 
-        <Image style={styles.imagen} source={this.props.data.url}/>
-        <Text style={styles.text}> 
-            Producto: {this.props.data.post}
-        </Text>
-        {
-            this.state.myLike 
-            ? 
-            <TouchableOpacity onPress={() => this.dislike()}>
-                <Ionicons name="heart-sharp" size={24} color="black" />
-                <Text>
-                    {this.state.likesCount} likes
-                </Text>
-            </TouchableOpacity>
-            
-            :
-            <TouchableOpacity onPress={() => this.like()}>
-                <Ionicons name="heart-outline" size={24} color="black" />
-                <Text>
-                    {this.state.likesCount} likes
-                </Text>
-            </TouchableOpacity>
-        }
+        <View style={styles.container}>
+        <View style={styles.dataTop}>
+            <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}><Text>{this.props.data.owner}</Text></TouchableOpacity> 
+            {
+                    auth.currentUser.email === this.props.data.owner
+                    ?   <TouchableOpacity style={styles.containerElemD} onPress={() => this.deletePost()}>
+                            <Entypo name="cross" size={24} color="#5c0931" />
+                        </TouchableOpacity>
+                    
+                    : <View></View>
+                }
 
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})}>
-            <FontAwesome name="comment-o" size={24}  />
-            <Text>
-                {this.state.commentsCount} comentarios
-            </Text>
-        </TouchableOpacity>
-        
-        {
-            auth.currentUser.email === this.props.data.owner
-            ?   <TouchableOpacity onPress={() => this.deletePost()}>
-                    <Text>Eliminar posteo</Text>
-                </TouchableOpacity>
-            :   <TouchableOpacity onPress={() => console.log('Denunciaste gorra!')}>
+        </View>
+                
+        <Image style={styles.imagen} source={this.props.data.url}/>
+
+        <View style={styles.containerDataPost}>
+            <View style={styles.containerLikeCommDel}>
+                {
+                    this.state.myLike 
+                    ? 
+                    <View style={styles.containerElem}>
+                        <TouchableOpacity style={styles.containerElem} onPress={() => this.dislike()}>
+                            <Ionicons name="heart-sharp" size={24} color="#5c0931" />
+                            <Text>
+                            {this.state.likesCount}
+                        </Text> 
+                        </TouchableOpacity>
+                    </View>
+                    :
+                    <View style={styles.containerElem}>
+                        <TouchableOpacity style={styles.containerElem} onPress={() => this.like()}>
+                            <Ionicons name="heart-outline" size={24} color="#5c0931" />
+                            <Text>
+                            {this.state.likesCount}
+                        </Text>
+                        </TouchableOpacity>
+                    </View>
+                    
+                }
+
+                <TouchableOpacity style={styles.containerElem} onPress={() => this.navegarComment()}>
+                    <FontAwesome name="comment-o" size={24} color="#5c0931" />
                     <Text>
-                        Denunciar posteo --- desarrollo
+                        {this.state.commentsCount}
                     </Text>
                 </TouchableOpacity>
-        }
-    </View>
+            </View>
+        
+        </View>
+
+        <Text style={styles.text}> 
+        <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}><Text>{this.props.data.owner} </Text></TouchableOpacity>{this.props.data.post}
+        </Text>
+
+        <FlatList
+                style={styles.comments}
+                data={this.state.comentarios}
+                keyExtractor={( item ) => item.createdAt.toString()}
+                renderItem={({item}) => <><TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {user: item.owner})}><Text style={styles.username}>{item.owner}</Text></TouchableOpacity> <Text>{item.description}</Text></>} />
+
+        <TouchableOpacity onPress={() => this.navegarComment()}>
+            <Text>
+                Ver los {this.state.commentsCount} comentarios
+            </Text>
+        </TouchableOpacity>
+
+<TextInput
+          keyboardType='default'
+          placeholder='Tu comentario!'
+          onChangeText={ text => this.setState({comment:text}) }
+          value={this.state.comment} />
+
+        <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+          <Text>
+            Subir
+          </Text>
+        </TouchableOpacity>
+
+        
+        </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
     imagen:{
-       height: '250px',
-       width: '250px' 
+       height: '406.800px',
+       width: '406.800px',
+       marginBottom: '20px',
+       marginTop: '0px' 
     },
     text: {
-        fontSize: '20px'
+        flex: 1,
+        fontSize: '15px',
+        marginBottom: '20px'
+    },
+    container:{
+        marginBottom: '20px',
+        marginTop: '20px',
+        alignItems: 'center',
+        border: '1px solid #5c0931',
+        width: '408.800px',
+        margin: 'auto',
+        backgroundColor: 'white'
+    },
+    containerElem:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    containerElemD:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+    },
+    containerLikeCommDel:{
+        flex: 1,
+        flexDirection: 'row',
+        marginBottom: '30px',
+        justifyContent: 'flex-start',
+    },
+    containerDataPost:{
+        flex: 1,
+        width: '100px',
+        marginTop: '5px',
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+    dataTop:{
+        flex: 1,
+        width: '400.800px',
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+    username:{
+        padding: '0px',
+        fontWeight: 'bold'
+    },
+    comments:{
+        marginBottom: '20px'
     }
   })
 
 export default Post
 
 //TAREAS
-// 1. QUE CAMBIE EL NUMERO DE COMENTARIOS Y ELIMINAR POSTEO
 // 2. ESTILOS
