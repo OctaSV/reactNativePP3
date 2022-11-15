@@ -32,7 +32,7 @@ class Post extends Component {
             .doc(this.props.id)
             .onSnapshot(doc => {
                 this.setState({
-                    comentarios:doc.data().comments
+                    comentarios:doc?.data()?.comments
                 })
             })
 
@@ -98,6 +98,7 @@ class Post extends Component {
       }
 
   render() {
+    
     return (
         <View style={styles.container}>
         <View style={styles.dataTop}>
@@ -203,7 +204,8 @@ const styles = StyleSheet.create({
         border: '1px solid #5c0931',
         width: '408.800px',
         margin: 'auto',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+
     },
     containerElem:{
         flex: 1,
@@ -222,11 +224,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     containerDataPost:{
-        flex: 1,
         width: '100px',
         marginTop: '5px',
         flexDirection: 'row',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+
     },
     dataTop:{
         flex: 1,

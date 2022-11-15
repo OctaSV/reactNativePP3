@@ -1,6 +1,6 @@
-import { StyleSheet, View, FlatList, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
-import React, { Component } from 'react';
-import { auth, db } from '../firebase/Config'
+import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, TextInput, ActivityIndicator } from 'react-native'
+import React, { Component } from 'react'
+import { db, auth } from '../firebase/Config'
 import Post from '../components/Post';
 
 export default class Profile extends Component {
@@ -10,20 +10,24 @@ export default class Profile extends Component {
       userInfo: [],
       userPosts: [],
       loader: true,
+
     }
   }
 
   getUserData() {
     let user = ''
-    if(this.props.route.params?.user) {
+    if (this.props.route.params?.user) {
       user = this.props.route.params.user;
     } else {
       user = auth.currentUser.email;
     }
+    //notar que si el mail esta mal escrito, te lo completa ejemplo nanci@gmail.con te devuelve nanci@gmail.com. Ademas si el mail es
+    //USUARIOREAL@gmail.com te devuelve usuarioreal@gmail.com 
     db.collection("users").where("email", '==', user).onSnapshot((docs) => {
       let userInfo = [];
       docs.forEach((doc) => {
         userInfo.push({
+
           data: doc.data()
         })
       });
@@ -31,12 +35,13 @@ export default class Profile extends Component {
         userInfo: userInfo,
         loader: false
       });
+      console.log(user)
     });
   }
 
   getUserPosts() {
     let user = ''
-    if(this.props.route.params?.user) {
+    if (this.props.route.params?.user) {
       user = this.props.route.params.user;
     } else {
       user = auth.currentUser.email;
@@ -61,8 +66,8 @@ export default class Profile extends Component {
     this.props.navigation.navigate('Login')
   }
 
+
   componentDidMount() {
-    console.log(this.props)
     this.getUserPosts()
     this.getUserData()
   }
@@ -70,24 +75,41 @@ export default class Profile extends Component {
 
 
   render() {
+
+    console.log(this.state.userInfo[0]?.data)
+
     return (
       <React.Fragment>
         {
           this.state.loader ?
             <ActivityIndicator size='large' color='black' />
             :
-            <View>
-              <View>
-                
-                <Text></Text>
-                <Text></Text>
-                <Text></Text>
+            <View style={styles.container}>
+              <View style={styles.pageTitle}>
+                <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
+                <Text style={styles.texto}>{this.state.userInfo[0]?.data.biography}</Text>
+                <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
               </View>
 
               <FlatList
+                //solucionar error virtualized list
+                
+                numColumns={2}
+                horizontal={false}
+                contentContainerStyle={{
+                  marginRight: '5px',
+                  marginLeft: '5px',
+                  marginBottom: '15px',
+                  marginHorizontal: '20px',
+                  flex: 1
+                  
+                  
+                }}
+               
+                scrollEnabled
                 data={this.state.userPosts}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url} />} />
+                 keyExtractor={(item) => item.id}
+                renderItem={  ({ item }) => <Post style={styles.item} navigation={this.props.navigation} id={item.id} data={item.data} url={item.url} /> } />
               <TouchableOpacity onPress={() => this.logOut()}>
                 <Text style={styles.title}>logOut</Text>
               </TouchableOpacity>
@@ -100,4 +122,32 @@ export default class Profile extends Component {
   }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+  container: {
+    height: '100vh',
+    width: '100vw'
+  },
+  imagen: {
+    height: '100px',
+    width: '100px',
+    borderRadius: '10px',
+    borderColor: 'white'
+  },
+  pageTitle: {
+    color: 'white',
+    fontSize: 40,
+    padding: 15,
+    backgroundColor: '#5c0931',
+    alignItems: 'center'
+  },
+  texto: {
+    fontWeight: 'bold',
+    color: 'white'
+    
+  },
+  item: {
+    marginHorizontal: '20px'
+  }
+
+})
