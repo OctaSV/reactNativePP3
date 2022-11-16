@@ -37,12 +37,12 @@ class Home extends Component {
     render() {
         return (
             <React.Fragment>
+                <Text style={styles.pageTitle}>FNATIC</Text>
                 {
                 this.state.loader ? 
                     <ActivityIndicator size='large' color='#5c0931'/>  
                 : 
                     <View style={styles.container}>
-                        <Text style={styles.pageTitle}>FNATIC</Text>
                         {this.state.allPosts.length === 0 ? 
                             <Text>Aun no hay posteos </Text>
                         :
@@ -61,18 +61,14 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        height: '100vh',
-        width: '100vw'
+        flex:1,
+        alignItems:'center'
     },
     pageTitle: {
         color: 'white',
         fontSize: 40,
         padding: 15,
         backgroundColor: '#5c0931'
-    },
-    flatlist: {
-        margin: 'auto',
-        width: '100%'
     }
 })
 
