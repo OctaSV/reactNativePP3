@@ -45,7 +45,7 @@ class Home extends Component {
                         <Text style={styles.pageTitle}>FNATIC</Text>
                         {this.state.allPosts.length === 0 ? 
                             <Text>Aun no hay posteos </Text>
-                        : 
+                        :
                             <FlatList 
                             style={styles.flatlist}    
                             data={this.state.allPosts}

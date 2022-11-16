@@ -1,5 +1,4 @@
 import MyCamera from '../components/MyCamera'
-
 import React, { Component } from 'react';
 import { Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { db, auth } from '../firebase/Config'
@@ -12,58 +11,57 @@ class NewPost extends Component {
         urlFoto: '',
         compCamara: true
     }
-}
+  }
 
-onImageUpload(url){
-  this.setState({
-    urlFoto: url,
-    compCamara: false
-})
-}
-
-newPost(posteo, urlFoto){
-  db.collection('posts').add({
-    owner: auth.currentUser.email,
-    post: posteo,
-    url: urlFoto,
-    createdAt: Date.now(),
-    likes:[],
-    comments: []
-  })
-  .then(() => {
-    this.props.navigation.navigate('Home')
+  onImageUpload(url){
     this.setState({
-      posteo: '',
-      compCamara: true
+      urlFoto: url,
+      compCamara: false
     })
-  })
-  .catch (err => console.log(err))
-}
+  }
+
+  newPost(posteo, urlFoto){
+    db.collection('posts').add({
+      owner: auth.currentUser.email,
+      post: posteo,
+      url: urlFoto,
+      createdAt: Date.now(),
+      likes:[],
+      comments: []
+    })
+    .then(() => {
+      this.props.navigation.navigate('Home')
+      this.setState({
+        posteo: '',
+        compCamara: true
+      })
+    })
+    .catch (err => console.log(err))
+  }
 
   render() {
     return (
       <>
-      {
-        this.state.compCamara 
-        ? <MyCamera onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
-        : <>
-        <Image style={styles.imagen} source={{uri: this.state.urlFoto}}/>
-        <TextInput
-        stlye={styles.form}
-        keyboardType='default'
-        placeholder='Tu nuevo posteo!'
-        onChangeText={ text => this.setState({posteo:text}) }
-        value={this.state.posteo} />
-        <TouchableOpacity onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
-            <Text>
-              Subir
-            </Text>
-          </TouchableOpacity>
-        </>
-      }
-    </>
-    )
-  }
+        {
+          this.state.compCamara ? 
+            <MyCamera onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.cam}/>
+          : 
+            <>
+              <Image style={styles.image} source={{uri: this.state.urlFoto}}/>
+              <TextInput
+              stlye={styles.form}
+              keyboardType='default'
+              placeholder='Tu nuevo posteo!'
+              onChangeText={ text => this.setState({posteo:text}) }
+              value={this.state.posteo} />
+              <TouchableOpacity onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
+                  <Text> Upload </Text>
+              </TouchableOpacity>
+            </>
+        }
+      </>
+      )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -73,10 +71,10 @@ const styles = StyleSheet.create({
   form:{
     flex:1,
 },
-  camera:{
+  cam:{
       flex:1,
   },
-  imagen:{
+  image:{
     width:'200px',
     height: '300px'
   }

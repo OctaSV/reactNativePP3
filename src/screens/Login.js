@@ -118,7 +118,14 @@ const styles = StyleSheet.create({
         borderRadius: 15
     },
     field: {
+        marginTop: 5,
+        padding: 7,
+        fontSize: 15,
+        borderWidth: 1,
+        borderColor: '#CCCCCC',
+        color: '#535353',
         width: '90%',
+        borderRadius: 5,
         height: '10%',
         paddingLeft: 10,
         shadowOpacity: 20

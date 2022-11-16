@@ -17,7 +17,7 @@ class MyCamera extends Component {
         Camera.requestCameraPermissionsAsync()
         .then(response => {
             this.setState({
-                permission:true
+                permission: true
             })
         })
         .catch(error => console.log(error))
@@ -30,7 +30,6 @@ class MyCamera extends Component {
                 urlFoto: response.uri,
                 mostrarCamara: false
             })
-
         })
         .catch(error =>console.log(error))
     }
@@ -55,7 +54,6 @@ class MyCamera extends Component {
         this.setState({
             mostrarCamara: false
         })
-
     }
 
     discardPicture(){
@@ -63,6 +61,10 @@ class MyCamera extends Component {
             urlFoto:'',
             mostrarCamara:true
         })
+    }
+
+    saveRegisterPicture(){
+        this.props.urlCam(this.state.urlFoto)
     }
 
 
@@ -77,11 +79,20 @@ class MyCamera extends Component {
                     source={{uri: this.state.urlFoto}}
                     />
                     <View>
-                        <TouchableOpacity onPress={()=> this.savePicture()}>
-                            <Text>
-                                Confirmar
-                            </Text>
-                        </TouchableOpacity>
+                        {
+                            this.props.registerCam ?
+                                <TouchableOpacity onPress={()=> this.saveRegisterPicture()}>
+                                    <Text>
+                                        Confirmar
+                                    </Text>
+                                </TouchableOpacity>
+                            :
+                                <TouchableOpacity onPress={()=> this.savePicture()}>
+                                    <Text>
+                                        Confirmar
+                                    </Text>
+                                </TouchableOpacity>
+                        }
                         <TouchableOpacity onPress={()=> this.discardPicture()}>
                             <Text>
                                 Descartar
