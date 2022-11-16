@@ -50,7 +50,7 @@ class Home extends Component {
                             style={styles.flatlist}    
                             data={this.state.allPosts}
                             keyExtractor={item => item.id.toString()}
-                            renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+                            renderItem={({item}) => <Post style={styles.flatlist}navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
                         }
                     </View>
                 }
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#5c0931'
     },
     flatlist: {
-        flex: 1,
+        margin: 'auto',
+        width: '100%'
     }
 })
 

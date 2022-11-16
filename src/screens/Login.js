@@ -59,7 +59,7 @@ class Login extends Component{
             <React.Fragment>
                 {
                     this.state.loader === true ? 
-                        <ActivityIndicator size='large' color='green'/>
+                        <ActivityIndicator size='large' color='#5c0931'/>
                     :
                         <View style={styles.container}>
                             <TouchableOpacity onPress={ ()=> this.props.navigation.navigate('TabNavigation')}>
