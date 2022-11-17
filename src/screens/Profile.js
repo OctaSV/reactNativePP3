@@ -85,36 +85,30 @@ export default class Profile extends Component {
           this.state.loader ?
             <ActivityIndicator size='large' color='black' />
             :
-            <View style={styles.containerr}>
+            <View>
               <View style={styles.pageTitle}>
-                <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
+                <Image 
+                  source={{uri:this.state.userInfo[0]?.data.photo}}
+                  style={styles.imagen}
+                  resizeMode='cover'
+                   />
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.biography}</Text>
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
               </View>
 
               <FlatList
-                //solucionar error virtualized list
-                
-                numColumns={3}
-                horizontal={false}
-               style={styles.flatList}
-               numColumns={3}
-                contentContainerStyle={{
-                  backgroundColor:'#000',
-                  padding:20
-                }}
-                columnWrapperStyle={{
-                  backgroundColor:'red',
-                  
-                }}
-               
-                scrollEnabled
+                //solucionar error virtualized list      
                 data={this.state.userPosts}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <Post style={styles.container} navigation={this.props.navigation} id={item.id} data={item.data} url={item.url} />} />
-              <TouchableOpacity onPress={() => this.logOut()}>
-                <Text style={styles.title}>logOut</Text>
-              </TouchableOpacity>
+                renderItem={({ item }) => <Post 
+                                            navigation={this.props.navigation} 
+                                            id={item.id} 
+                                            data={item.data} 
+                                            url={item.url} /> 
+                            }/>
+                <TouchableOpacity onPress={() => this.logOut()}>
+                  <Text style={styles.title}>logOut</Text>
+                </TouchableOpacity>
             </View>
         }
 
@@ -125,18 +119,6 @@ export default class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
-
-  containerr: {
-    height: '100vh',
-    width: '100vw',
-    margin: 'unset'
-  },
-  imagen: {
-    height: '100px',
-    width: '100px',
-    borderRadius: '10px',
-    borderColor: 'white'
-  },
   pageTitle: {
     color: 'white',
     fontSize: 40,
@@ -144,17 +126,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#5c0931',
     alignItems: 'center'
   },
+  imagen: {
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    borderColor: 'white'
+  },
   texto: {
     fontWeight: 'bold',
     color: 'white'
-
   },
-
-  flatList: {
-    
-  },
-  container: {
-
-  }
 
 })
