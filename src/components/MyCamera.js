@@ -103,7 +103,7 @@ class MyCamera extends Component {
                     </View>
                 </View>
             :
-            <ActivityIndicator size='large' color='#5c0931'/>
+            <ActivityIndicator style={styles.activity} size='large' color='#5c0931'/>
         }
         </>
     )
@@ -147,6 +147,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         flexDirection: 'row',
         width: '437px'
+     },
+     activity: {
+        marginTop: 250
      }
 })
 

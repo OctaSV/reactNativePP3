@@ -76,16 +76,16 @@ export default class Profile extends Component {
 
   render() {
 
-    
+
 
     return (
-      
+
       <React.Fragment>
         {
           this.state.loader ?
-            <ActivityIndicator size='large' color='black' />
+            <ActivityIndicator styles={styles.activity} size='large' color='black' />
             :
-            <View>
+            <View style={styles.container}>
               <View style={styles.pageTitle}>
                 <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.biography}</Text>
@@ -93,18 +93,20 @@ export default class Profile extends Component {
               </View>
 
               <FlatList
-                //solucionar error virtualized list      
+                //solucionar error virtualized list 
+
                 data={this.state.userPosts}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <Post 
-                                            navigation={this.props.navigation} 
-                                            id={item.id} 
-                                            data={item.data} 
-                                            url={item.url} /> 
-                            }/>
-                <TouchableOpacity onPress={() => this.logOut()}>
-                  <Text style={styles.title}>logOut</Text>
-                </TouchableOpacity>
+                  navigation={this.props.navigation}
+                  id={item.id}
+                  data={item.data}
+                  url={item.url} />
+                } />
+
+              <TouchableOpacity onPress={() => this.logOut()}>
+                <Text style={styles.title}>logOut</Text>
+              </TouchableOpacity>
             </View>
         }
 
@@ -132,5 +134,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white'
   },
+  activity: {
+       marginTop: 250
+    },
+  container: {
+    flex: 1
+  }
 
 })

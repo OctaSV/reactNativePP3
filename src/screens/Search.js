@@ -33,15 +33,16 @@ class Search extends Component {
         let textToFilter = this.state.textSearch.toLowerCase();
 
         if (this.state.textSearch === '') {
-            this.setState({ requiredField: 'You cannot send an empty form' })
+            this.setState({ requiredField: 'An empty form is not valid, try again' })
         } else {
             console.log(this.state.users)
             this.setState({ requiredField: '' })
             const filteredUsers = this.state.users?.filter((user) => user.data.userName?.toLowerCase().includes(textToFilter));
             console.log(filteredUsers)
-            if (filteredUsers.length === 0) return this.setState({ usersErr: 'Sorry, that user does not exist', filteredUsers: [] })
+            if (filteredUsers.length === 0) return this.setState({ usersErr: 'No results, try something different!', filteredUsers: [] })
             this.setState({ filteredUsers: filteredUsers })
         }
+        
     }
 
     controlChanges(event) {
@@ -62,15 +63,12 @@ class Search extends Component {
                     value={this.state.textSearch}
                     onChange={(event) => this.controlChanges(event)}
                 />
-
+               <Text style={styles.error}>{this.state.requiredField}</Text> 
                 <TouchableOpacity onPress={(event) => this.preventSubmit(event)}>
                     <Text style={styles.button}>Search</Text>
                 </TouchableOpacity>
 
-                <Text style={styles.error}>{this.state.requiredField}</Text>
-
-
-                <Text>{this.state.usersErr}</Text>
+                <Text style={styles.noR}>{this.state.usersErr}</Text>
 
                 <FlatList
              
@@ -101,29 +99,46 @@ const styles = StyleSheet.create({
         height: '8%',
         paddingLeft: 10,
         shadowOpacity: 20,
-        alignSelf: 'center'
-
+        alignSelf: 'center',
+        marginBottom: 20,
     },
     title: {
         fontSize: 50,
-        textShadowRadius: 10
+        textShadowRadius: 10,
+        backgroundColor: '#5c0931',
+        borderRadius: 300,
+        color: 'white',
+        marginBottom: 20,
+        marginTop: 10,
+        marginLeft: 10,
+        marginRight: 10
     },
     button: {
-        fontSize: 20,
+        fontSize: 40,
         color: 'white',
         backgroundColor: '#5c0931',
         textDecorationStyle: 'bold',
         marginBottom: 10,
-        marginTop: 3,
+        marginTop: 10,
         padding: 3,
         marginLeft: 'auto',
         marginRight: 'auto',
         borderRadius: 7,
-        shadowColor: 'black'
+        shadowColor: 'black',
+        shadowRadius: 35,
+        shadowOpacity: 100,
     },
     results: {
         fontSize: 35,
     },
+    error: {
+        fontSize: 15,
+        fontWeight: 'bold'
+    },
+    noR: {
+        fontSize: 35,
+        fontWeight: 'bold'
+    }
     
 
 })
