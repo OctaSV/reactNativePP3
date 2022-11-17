@@ -101,14 +101,14 @@ class Post extends Component {
   render() {    
     return (
         <View style={styles.container}>
-            <View>
-                <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}>
-                    <Text>{this.props.data.owner}</Text>
+            <View style={styles.usercruz}>
+                <TouchableOpacity  onPress={()=> this.userProfile()}>
+                    <Text style={styles.username} >{this.props.data.owner}</Text>
                 </TouchableOpacity> 
                 {
                     auth.currentUser.email === this.props.data.owner ?
                     <TouchableOpacity onPress={() => this.deletePost()}>
-                        <Entypo name="cross" size={24} color="#5c0931" />
+                        <Entypo name="cross" style={styles.cruz} size={50} color="#5c0931" />
                     </TouchableOpacity> : 
                     <View></View>
                 }
@@ -123,28 +123,28 @@ class Post extends Component {
             <View style={styles.containerLikeCommDel}>
                 {
                     this.state.myLike ? 
+                    <View style={styles.containerLikeCommDel}>
                     <TouchableOpacity style={styles.likes} onPress={() => this.dislike()}>
-                        <Ionicons name="heart-sharp" size={24} color="#5c0931" />
-                        <Text style={styles.likes.text}> {this.state.likesCount} </Text> 
+                        <Ionicons name="heart-sharp" size={40} color="#5c0931" /> 
                     </TouchableOpacity>
+                    <Text style={styles.likes.text}> {this.state.likesCount} </Text> 
+                    </View>
                     :
+                    <View style={styles.containerLikeCommDel}>
                     <TouchableOpacity style={styles.likes} onPress={() => this.like()}>
-                        <Ionicons name="heart-outline" size={24} color="#5c0931" />
-                        <Text style={styles.likes.text}> {this.state.likesCount} </Text>
+                        <Ionicons name="heart-outline" size={40} color="#5c0931" /> 
                     </TouchableOpacity>
+                    <Text style={styles.likes.text}> {this.state.likesCount} </Text>
+                    </View>
                 }
-
-                        <TouchableOpacity style={styles.containerElem} onPress={() => this.navegarComment()}>
-                            <FontAwesome name="comment-o" size={24} color="#5c0931" />
-                            <Text>
-                                {this.state.commentsCount}
-                            </Text>
+                        <View style={styles.containerLikeCommDel}>
+                        <TouchableOpacity style={styles.likes} onPress={() => this.navegarComment()}>
+                            <FontAwesome name="comment-o" size={40} color="#5c0931" />
                         </TouchableOpacity>
+                        <Text style={styles.likes.text}> {this.state.commentsCount} </Text>
+                        </View>
                     </View>
 
-            <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}>
-                <Text style={styles.username.text}>{this.props.data.owner}</Text>
-            </TouchableOpacity>
     
             <FlatList
                     style={styles.list}
@@ -170,7 +170,7 @@ class Post extends Component {
                 />
 
                 <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
-                    <Text> Subir </Text>
+                    <Text style={styles.boton}> Subir </Text>
                 </TouchableOpacity>
             </View>
         </View> 
@@ -180,6 +180,9 @@ class Post extends Component {
 
 
 const styles = StyleSheet.create({
+    lik: {
+        flexDirection: 'row'
+    },
     container:{
         marginVertical: 20,
         border: '1px solid #5c0931',
@@ -192,32 +195,31 @@ const styles = StyleSheet.create({
        marginBottom: 20,
     },
     containerLikeCommDel:{
-        marginBottom: 30,
         paddingHorizontal: 0,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+
     },
     containerElem:{
         width:'49%',
-        justifyContent:'space-between',
-        text:{
+
+        text: {
             paddingLeft: 4
         }
     },
     likes:{
         width:'49%',
-        justifyContent:'space-between',
         textAlign: 'right',
-        text:{
-            paddingRight: 4
+        text: {
+            paddingRight: 4,
+            size: 30
         }
     },
     username:{
         padding: 0,
         textAlign: 'center',
-        text:{
-            fontWeight: 'bold'
-        }
+        fontSize: 20,
+        fontWeight: 400,
+
     },
     list:{
         textAlign: 'center',
@@ -232,6 +234,21 @@ const styles = StyleSheet.create({
     containerDataPost:{  
         marginTop: 5,
     },
+    cruz: {
+
+    },
+    boton: {
+        fontSize: 16,
+        backgroundColor: '#5c0931',
+        color: 'white',
+        borderRadius: 10,
+        alignSelf: 'center'
+    },
+    usercruz: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    }
+
   })
 
 export default Post

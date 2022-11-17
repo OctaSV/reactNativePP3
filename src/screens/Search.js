@@ -71,7 +71,6 @@ class Search extends Component {
                 <Text style={styles.noR}>{this.state.usersErr}</Text>
 
                 <FlatList
-             
                     data={this.state.filteredUsers}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) => <TouchableOpacity> <User style={styles.results} navigation={this.props.navigation} user={item.data} />  </TouchableOpacity>}
