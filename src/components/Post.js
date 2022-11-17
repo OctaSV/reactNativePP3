@@ -5,6 +5,7 @@ import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { CurrentRenderContext } from '@react-navigation/native'
 
 class Post extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class Post extends Component {
 
     userProfile() {
         this.props.navigation.navigate('Go Back', { user: this.props.data.owner })
+        console.log(this.props.data)
     }
 
     componentDidMount() {
@@ -42,7 +44,7 @@ class Post extends Component {
     like() {
         db.collection('posts').doc(this.props.id).update({
             likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
-        })
+        }) 
             .then(() => {
                 this.setState({
                     myLike: true,
@@ -98,7 +100,8 @@ class Post extends Component {
         this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})
     }
 
-  render() {    
+  render() { 
+      
     return (
         <View style={styles.container}>
             <View style={styles.usercruz}>
@@ -145,32 +148,41 @@ class Post extends Component {
                         </View>
                     </View>
 
-    
+            <View style={styles.cajacomentarios}>
+                <View>
             <FlatList
                     style={styles.list}
                     data={this.state.comentarios}
                     keyExtractor={( item ) => item.createdAt.toString()}
                     renderItem={({item}) => <>
+                                                <View style={styles.comentarios}>
                                                 <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {user: item.owner})}>
-                                                    <Text style={styles.username}>{item.owner}</Text>
-                                                </TouchableOpacity> <Text>{item.description}</Text>
+                                                    <Text style={styles.comentarios.texto}>{item.owner}: </Text>
+                                                </TouchableOpacity> 
+                                                <Text style={styles.comentarios.texto}>{item.description}</Text>
+                                                </View>
                                             </>
                                 }/>
-            <View style={styles.commentsContainer}>
-                <TouchableOpacity onPress={() => this.navegarComment()}>
-                    <Text>Ver los {this.state.commentsCount} comentarios </Text>
-                </TouchableOpacity>
+            </View>
+            </View>
+            <View >
+    
 
+                <View style={styles.commentsContainer}>
                 <TextInput
                     style={styles.commentsInput}
                     keyboardType='default'
-                    placeholder='Tu comentario!'
+                    placeholder='Deja un comentario'
                     onChangeText={ text => this.setState({comment:text}) }
                     value={this.state.comment} 
                 />
 
                 <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
                     <Text style={styles.boton}> Subir </Text>
+                </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={() => this.navegarComment()}>
+                    <Text style={styles.textoverloscomentarios}>Ver los {this.state.commentsCount} comentarios </Text>
                 </TouchableOpacity>
             </View>
         </View> 
@@ -181,14 +193,18 @@ class Post extends Component {
 
 const styles = StyleSheet.create({
     lik: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginLeft: 5,
+        fontSize: 10
     },
     container:{
         marginVertical: 20,
-        border: '1px solid #5c0931',
+        borderWidth: 4,
         backgroundColor: 'white',
         paddingVertical: 5,
         paddingHorizontal: 8,
+        borderColor: '#5c0931',
+        borderRadius: 8
     },
     imagen:{
        height: 400,
@@ -201,7 +217,6 @@ const styles = StyleSheet.create({
     },
     containerElem:{
         width:'49%',
-
         text: {
             paddingLeft: 4
         }
@@ -210,8 +225,9 @@ const styles = StyleSheet.create({
         width:'49%',
         textAlign: 'right',
         text: {
-            paddingRight: 4,
-            size: 30
+            size: 30,
+            marginLeft: 11,
+            alignSelf: 'center'
         }
     },
     username:{
@@ -219,18 +235,16 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: 400,
-
     },
     list:{
         textAlign: 'center',
-        marginTop:30
     },
     commentsContainer:{
-        textAlign: 'center'
+        textAlign: 'center',
+        flexDirection: 'row',
+        alignItems: 'center'
     },
-    commentsInput:{
-        textAlign: 'center'
-    },
+
     containerDataPost:{  
         marginTop: 5,
     },
@@ -238,15 +252,46 @@ const styles = StyleSheet.create({
 
     },
     boton: {
-        fontSize: 16,
+        fontSize: 15,
         backgroundColor: '#5c0931',
         color: 'white',
         borderRadius: 10,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontWeight: 'bold'
     },
     usercruz: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    cajacomentarios: {
+        borderWidth: 2,
+        borderColor: '#5c0931',
+        alignItems: 'flex-start'
+    },
+    comentarios: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        texto: {
+            fontSize: 18
+        }
+       
+    },
+    commentsInput: {
+        backgroundColor: '#f5fffa',
+        height: 15,
+        width: '80vw',
+        borderTopRightRadius: 7,
+        marginTop: 3,
+        marginRight: 3,
+        marginBottom: 4,
+        fontWeight: 300,
+        
+    },
+    textoverloscomentarios: {
+        marginTop: 6,
+  fontWeight: 600,
+  color: '#8b0000'
     }
 
   })
