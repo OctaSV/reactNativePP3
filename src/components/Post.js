@@ -91,158 +91,136 @@ class Post extends Component {
               });
           })
           .catch(err => console.log(err))
-      }
+    }
 
-      navegarComment(){
+    navegarComment(){
         this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})
-      }
+    }
 
-  render() {
-    
+  render() {    
     return (
         <View style={styles.container}>
-        <View style={styles.dataTop}>
-            <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}><Text>{this.props.data.owner}</Text></TouchableOpacity> 
-            {
-                    auth.currentUser.email === this.props.data.owner
-                    ?   <TouchableOpacity style={styles.containerElemD} onPress={() => this.deletePost()}>
-                            <Entypo name="cross" size={24} color="#5c0931" />
-                        </TouchableOpacity>
-                    
-                    : <View></View>
+            <View>
+                <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}>
+                    <Text>{this.props.data.owner}</Text>
+                </TouchableOpacity> 
+                {
+                    auth.currentUser.email === this.props.data.owner ?
+                    <TouchableOpacity onPress={() => this.deletePost()}>
+                        <Entypo name="cross" size={24} color="#5c0931" />
+                    </TouchableOpacity> : 
+                    <View></View>
                 }
-
-        </View>
-                
-        <Image style={styles.imagen} source={this.props.data.url}/>
-
-        <View style={styles.containerDataPost}>
+            </View>
+                    
+            <Image 
+                style={styles.imagen}
+                source={{uri:this.props.data.url}}
+                resizeMode='cover'
+                />
+ 
             <View style={styles.containerLikeCommDel}>
                 {
-                    this.state.myLike 
-                    ? 
-                    <View style={styles.containerElem}>
-                        <TouchableOpacity style={styles.containerElem} onPress={() => this.dislike()}>
-                            <Ionicons name="heart-sharp" size={24} color="#5c0931" />
-                            <Text>
-                            {this.state.likesCount}
-                        </Text> 
-                        </TouchableOpacity>
-                    </View>
+                    this.state.myLike ? 
+                    <TouchableOpacity style={styles.likes} onPress={() => this.dislike()}>
+                        <Ionicons name="heart-sharp" size={24} color="#5c0931" />
+                        <Text style={styles.likes.text}> {this.state.likesCount} </Text> 
+                    </TouchableOpacity>
                     :
-                    <View style={styles.containerElem}>
-                        <TouchableOpacity style={styles.containerElem} onPress={() => this.like()}>
-                            <Ionicons name="heart-outline" size={24} color="#5c0931" />
-                            <Text>
-                            {this.state.likesCount}
-                        </Text>
-                        </TouchableOpacity>
-                    </View>
-                    
+                    <TouchableOpacity style={styles.likes} onPress={() => this.like()}>
+                        <Ionicons name="heart-outline" size={24} color="#5c0931" />
+                        <Text style={styles.likes.text}> {this.state.likesCount} </Text>
+                    </TouchableOpacity>
                 }
 
                 <TouchableOpacity style={styles.containerElem} onPress={() => this.navegarComment()}>
                     <FontAwesome name="comment-o" size={24} color="#5c0931" />
-                    <Text>
-                        {this.state.commentsCount}
-                    </Text>
+                    <Text style={styles.containerElem.text}> {this.state.commentsCount}</Text>
                 </TouchableOpacity>
             </View>
-        
-        </View>
 
-        <Text style={styles.text}> 
-        <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}><Text>{this.props.data.owner} </Text></TouchableOpacity>{this.props.data.post}
-        </Text>
+            <TouchableOpacity style={styles.username} onPress={()=> this.userProfile()}>
+                <Text style={styles.username.text}>{this.props.data.owner}</Text>
+            </TouchableOpacity>
+    
+            <FlatList
+                    style={styles.footer}
+                    data={this.state.comentarios}
+                    keyExtractor={( item ) => item.createdAt.toString()}
+                    renderItem={({item}) => <>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {user: item.owner})}>
+                                                    <Text style={styles.username}>{item.owner}</Text>
+                                                </TouchableOpacity> <Text>{item.description}</Text>
+                                            </>
+                                }/>
+            <View style={styles.footer}>
+                <TouchableOpacity onPress={() => this.navegarComment()}>
+                    <Text>Ver los {this.state.commentsCount} comentarios </Text>
+                </TouchableOpacity>
 
-        <FlatList
-                style={styles.comments}
-                data={this.state.comentarios}
-                keyExtractor={( item ) => item.createdAt.toString()}
-                renderItem={({item}) => <><TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {user: item.owner})}><Text style={styles.username}>{item.owner}</Text></TouchableOpacity> <Text>{item.description}</Text></>} />
+                <TextInput
+                    style={styles.footer}
+                    keyboardType='default'
+                    placeholder='Tu comentario!'
+                    onChangeText={ text => this.setState({comment:text}) }
+                    value={this.state.comment} 
+                />
 
-        <TouchableOpacity onPress={() => this.navegarComment()}>
-            <Text>
-                Ver los {this.state.commentsCount} comentarios
-            </Text>
-        </TouchableOpacity>
-
-<TextInput
-          keyboardType='default'
-          placeholder='Tu comentario!'
-          onChangeText={ text => this.setState({comment:text}) }
-          value={this.state.comment} />
-
-        <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
-          <Text>
-            Subir
-          </Text>
-        </TouchableOpacity>
-
-        
-        </View>
+                <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+                    <Text> Subir </Text>
+                </TouchableOpacity>
+            </View>
+        </View> 
     )
   }
 }
 
 const styles = StyleSheet.create({
-    imagen:{
-       height: '406.800px',
-       width: '406.800px',
-       marginBottom: '20px',
-       marginTop: '0px' 
-    },
-    text: {
-        flex: 1,
-        fontSize: '15px',
-        marginBottom: '20px'
-    },
     container:{
-        marginBottom: '20px',
-        marginTop: '20px',
-        alignItems: 'center',
+        marginVertical: 20,
         border: '1px solid #5c0931',
-        width: '408.800px',
-        margin: 'auto',
         backgroundColor: 'white',
-
+        paddingVertical: 5,
+        paddingHorizontal: 8,
     },
-    containerElem:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    containerElemD:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'flex-end'
+    imagen:{
+       height: 400,
+       marginBottom: 20,
     },
     containerLikeCommDel:{
-        flex: 1,
+        marginBottom: 30,
+        paddingHorizontal: 0,
         flexDirection: 'row',
-        marginBottom: '30px',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
     },
-    containerDataPost:{
-        width: '100px',
-        marginTop: '5px',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-
+    containerElem:{
+        width:'49%',
+        justifyContent:'space-between',
+        text:{
+            paddingLeft: 4
+        }
     },
-    dataTop:{
-        flex: 1,
-        width: '400.800px',
-        flexDirection: 'row',
-        justifyContent: 'flex-start'
+    likes:{
+        width:'49%',
+        justifyContent:'space-between',
+        textAlign: 'right',
+        text:{
+            paddingRight: 4
+        }
     },
     username:{
-        padding: '0px',
-        fontWeight: 'bold'
+        padding: 0,
+        textAlign: 'center',
+        text:{
+            fontWeight: 'bold'
+        }
     },
-    comments:{
-        marginBottom: '20px'
-    }
+    footer:{
+        textAlign: 'center'
+    },
+    containerDataPost:{  
+        marginTop: 5,
+    },
   })
 
 export default Post
