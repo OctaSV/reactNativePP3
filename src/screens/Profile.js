@@ -88,7 +88,7 @@ export default class Profile extends Component {
             <View style={styles.containerr}>
               <View style={styles.pageTitle}>
                 <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
-                <Text style={styles.texto}>{this.state.userInfo[0]?.data.biography}</Text>
+                <Text style={styles.texto}>Biografia: {this.state.userInfo[0]?.data.biography}</Text>
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
               </View>
 

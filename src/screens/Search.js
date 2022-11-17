@@ -1,8 +1,7 @@
 import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
 import React, { Component } from 'react'
-import { auth, db } from '../firebase/Config'
-import firebase from 'firebase'
-import User from './User'
+import { db } from '../firebase/Config'
+import User from '../components/User'
 
 class Search extends Component {
     constructor(props) {
@@ -49,9 +48,6 @@ class Search extends Component {
         this.setState({ textSearch: event.target.value })
     }
 
-    userProfile() {
-        this.props.navigation.navigate('Go Back', { user: this.state.filteredUsers })
-    }
 
     render() {
 
@@ -77,11 +73,10 @@ class Search extends Component {
                 <Text>{this.state.usersErr}</Text>
 
                 <FlatList
-                   
+             
                     data={this.state.filteredUsers}
                     keyExtractor={item => item.id.toString()}
-               
-                    renderItem={({ item }) => <TouchableOpacity> <User style={styles.results} user={item.data} />  </TouchableOpacity>}
+                    renderItem={({ item }) => <TouchableOpacity> <User style={styles.results} navigation={this.props.navigation} user={item.data} />  </TouchableOpacity>}
                 />
 
 
@@ -92,7 +87,8 @@ class Search extends Component {
 }
 const styles = StyleSheet.create({
     padre: {
-        textAlign: 'center'
+        textAlign: 'center',
+        flex: 1
     },
     field: {
         marginTop: 7,
@@ -102,7 +98,7 @@ const styles = StyleSheet.create({
         color: '#535353',
         width: '90%',
         borderRadius: 5,
-        height: '15%',
+        height: '8%',
         paddingLeft: 10,
         shadowOpacity: 20,
         alignSelf: 'center'
@@ -127,9 +123,8 @@ const styles = StyleSheet.create({
     },
     results: {
         fontSize: 35,
-    
-
     },
+    
 
 })
 

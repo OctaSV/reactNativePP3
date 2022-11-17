@@ -12,36 +12,36 @@ const Tab = createBottomTabNavigator();
 function TabNavigation() {
     return (
         <Tab.Navigator screenOptions={{ tabBarShowLabel: false, /*tabBarStyle: {flex :1, width: '5vw', height: '10vh', position: screenTop}, tabBarActiveTintColor: 'red'*/ tabBarInactiveTintColor: 'green' }}>
-            <Tab.Screen 
+            <Tab.Screen
                 name="Home"
                 component={Home}
                 options={{
-                        tabBarIcon: () => <FontAwesome name="home" size={24} color="black" />,
-                        headerShown: false, tabBarActiveTintColor: 'red',
-                        tabBarInactiveTintColor: 'green' 
-                    }}/>
-            <Tab.Screen 
+                    tabBarIcon: () => <FontAwesome name="home" size={24} color="black" />,
+                    headerShown: false, tabBarActiveTintColor: 'red',
+                    tabBarInactiveTintColor: 'green'
+                }} />
+            <Tab.Screen
                 name="Profile"
                 component={Profile}
-                options={{ 
-                        tabBarIcon: () => <FontAwesome name="user" size={24}                color="black" />,
-                        headerShown: false 
-                    }}/>
+                options={{
+                    tabBarIcon: () => <FontAwesome name="user" size={24} color="black" />,
+                    headerShown: false
+                }} />
             <Tab.Screen
-                name="NewPost" 
-                component={NewPost} 
-                options={{ 
-                        tabBarIcon: () => <FontAwesome name="plus" size={24} color="black" />,
-                        headerShown: false
-                    }}/>
+                name="NewPost"
+                component={NewPost}
+                options={{
+                    tabBarIcon: () => <FontAwesome name="plus" size={24} color="black" />,
+                    headerShown: false
+                }} />
             <Tab.Screen
-                name="Search" 
-                component={Search} 
-                options={{ 
-                        tabBarIcon: () => <FontAwesome name='search' size={24} color="black" /> 
-                    }}/>
+                name="Search"
+                component={Search}
+                options={{
+                    tabBarIcon: () => <FontAwesome name='search' size={24} color="black" />,
+                    headerShown: false
+                }} />
         </Tab.Navigator>
-        //Agregar foto usuario
     )
 
 }
