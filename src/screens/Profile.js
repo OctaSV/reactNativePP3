@@ -76,15 +76,16 @@ export default class Profile extends Component {
 
   render() {
 
-    console.log(this.state.userInfo[0]?.data)
+    
 
     return (
+      
       <React.Fragment>
         {
           this.state.loader ?
             <ActivityIndicator size='large' color='black' />
             :
-            <View style={styles.container}>
+            <View style={styles.containerr}>
               <View style={styles.pageTitle}>
                 <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.biography}</Text>
@@ -93,23 +94,16 @@ export default class Profile extends Component {
 
               <FlatList
                 //solucionar error virtualized list
-                
-                numColumns={2}
-                horizontal={false}
+               style={styles.flatList}
+               numColumns={3}
                 contentContainerStyle={{
-                  marginRight: '5px',
-                  marginLeft: '5px',
                   marginBottom: '15px',
-                  marginHorizontal: '20px',
-                  flex: 1
-                  
-                  
-                }}
-               
+                  alignSelf: 'center',
+                } }
                 scrollEnabled
                 data={this.state.userPosts}
-                 keyExtractor={(item) => item.id}
-                renderItem={  ({ item }) => <Post style={styles.item} navigation={this.props.navigation} id={item.id} data={item.data} url={item.url} /> } />
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <Post style={styles.container} navigation={this.props.navigation} id={item.id} data={item.data} url={item.url} />} />
               <TouchableOpacity onPress={() => this.logOut()}>
                 <Text style={styles.title}>logOut</Text>
               </TouchableOpacity>
@@ -124,9 +118,10 @@ export default class Profile extends Component {
 
 const styles = StyleSheet.create({
 
-  container: {
+  containerr: {
     height: '100vh',
-    width: '100vw'
+    width: '100vw',
+    margin: 'unset'
   },
   imagen: {
     height: '100px',
@@ -144,10 +139,14 @@ const styles = StyleSheet.create({
   texto: {
     fontWeight: 'bold',
     color: 'white'
+
+  },
+
+  flatList: {
     
   },
-  item: {
-    marginHorizontal: '20px'
+  container: {
+
   }
 
 })
