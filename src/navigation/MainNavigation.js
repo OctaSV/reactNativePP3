@@ -2,6 +2,7 @@ import Login from '../screens/Login';
 import Register from '../screens/Register';
 import TabNavigation from './TabNavigation';
 import Comments from '../screens/Comments';
+import Search from '../screens/Search';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

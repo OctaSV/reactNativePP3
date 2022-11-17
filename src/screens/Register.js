@@ -90,9 +90,9 @@ class Register extends Component{
         .then(() => {
             this.savePicture()
             db.collection('users').add({
-                email: toLowerCase(email),
+                email: email,
                 password: password,
-                userName: toLowerCase(userName),
+                userName: userName,
                 biography: biography, 
                 photo: photo,
                 createdAt: Date.now()
