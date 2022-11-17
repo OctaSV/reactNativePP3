@@ -145,7 +145,7 @@ class Post extends Component {
             </TouchableOpacity>
     
             <FlatList
-                    style={styles.footer}
+                    style={styles.list}
                     data={this.state.comentarios}
                     keyExtractor={( item ) => item.createdAt.toString()}
                     renderItem={({item}) => <>
@@ -154,13 +154,13 @@ class Post extends Component {
                                                 </TouchableOpacity> <Text>{item.description}</Text>
                                             </>
                                 }/>
-            <View style={styles.footer}>
+            <View style={styles.commentsContainer}>
                 <TouchableOpacity onPress={() => this.navegarComment()}>
                     <Text>Ver los {this.state.commentsCount} comentarios </Text>
                 </TouchableOpacity>
 
                 <TextInput
-                    style={styles.footer}
+                    style={styles.commentsInput}
                     keyboardType='default'
                     placeholder='Tu comentario!'
                     onChangeText={ text => this.setState({comment:text}) }
@@ -217,7 +217,14 @@ const styles = StyleSheet.create({
             fontWeight: 'bold'
         }
     },
-    footer:{
+    list:{
+        textAlign: 'center',
+        marginTop:30
+    },
+    commentsContainer:{
+        textAlign: 'center'
+    },
+    commentsInput:{
         textAlign: 'center'
     },
     containerDataPost:{  
