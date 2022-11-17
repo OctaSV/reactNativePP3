@@ -94,12 +94,20 @@ export default class Profile extends Component {
 
               <FlatList
                 //solucionar error virtualized list
+                
+                numColumns={3}
+                horizontal={false}
                style={styles.flatList}
                numColumns={3}
                 contentContainerStyle={{
-                  marginBottom: '15px',
-                  alignSelf: 'center',
-                } }
+                  backgroundColor:'#000',
+                  padding:20
+                }}
+                columnWrapperStyle={{
+                  backgroundColor:'red',
+                  
+                }}
+               
                 scrollEnabled
                 data={this.state.userPosts}
                 keyExtractor={(item) => item.id}
