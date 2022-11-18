@@ -156,13 +156,15 @@ class Post extends Component {
                     keyExtractor={( item ) => item.createdAt.toString()}
                     renderItem={({item}) => <>
                                                 <View style={styles.comentarios}>
-                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {user: item.owner})}>
-                                                    <Text style={styles.comentarios.texto}>{item.owner}: </Text>
+                                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Go Back', {user: item.owner})}>
+                                                    <Text style={styles.comentarios.texto.owner}>{item.owner}: </Text>
                                                 </TouchableOpacity> 
                                                 <Text style={styles.comentarios.texto}>{item.description}</Text>
                                                 </View>
                                             </>
+                                            
                                 }/>
+                                
             </View>
             </View>
             <View >
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
         padding: 0,
         textAlign: 'center',
         fontSize: 20,
-        fontWeight: 400,
+        fontWeight: 750,
     },
     list:{
         textAlign: 'center',
@@ -273,7 +275,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         texto: {
-            fontSize: 18
+            fontSize: 18,
+            owner: {
+                fontWeight: 750
+            }
         }
        
     },
