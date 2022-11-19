@@ -60,8 +60,7 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        paddingHorizontal: 10
+        flex: 1
     },
     pageTitle: {
         color: 'white',

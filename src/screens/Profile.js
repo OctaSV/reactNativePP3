@@ -90,7 +90,6 @@ class Profile extends Component {
 
   render() {
     return (
-
       <React.Fragment>
         {
           this.state.loader ?
@@ -111,7 +110,6 @@ class Profile extends Component {
                   <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
                 </View>
                 <FlatList
-                style={styles.flat}
                   //solucionar error virtualized list 
                   data={this.state.userPosts}
                   keyExtractor={(item) => item.id}
@@ -166,11 +164,7 @@ const styles = StyleSheet.create({
     {
       marginRight: 10
     }
-  },
-  flat: {
-    paddingHorizontal:10
   }
-
 })
 
 export default Profile;

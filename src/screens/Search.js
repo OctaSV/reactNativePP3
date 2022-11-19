@@ -11,7 +11,7 @@ class Search extends Component {
             textSearch: '',
             users: [],
             filteredUsers: [],
-            usersErr: '',
+            usersErr: false
         }
     }
 
@@ -27,36 +27,24 @@ class Search extends Component {
         )
     }
 
-    preventSubmit(event) {
-        event.preventDefault()
-        this.setState({ usersErr: '' });
-
-        let textToFilter = this.state.textSearch.toLowerCase();
-
-        if (this.state.textSearch === '') {
-            this.setState({ requiredField: 'An empty form is not valid, try again' })
-        } else {
-            console.log(this.state.users)
-            this.setState({ requiredField: '' })
-            const filteredUsers = this.state.users?.filter((user) => user.data.userName?.toLowerCase().includes(textToFilter));
-            console.log(filteredUsers)
-            if (filteredUsers.length === 0) return this.setState({ usersErr: 'No results, try something different!', filteredUsers: [] })
-            this.setState({ filteredUsers: filteredUsers })
-        }
-        
-    }
-
     controlChanges(event) {
         this.setState({ textSearch: event.target.value })
-        
         if (event.target.value === '') {
             this.setState({ filteredUsers: [] })
         } else {
-            const filteredUsers = this.state.users?.filter((user) => user.data.userName?.toLowerCase().includes(event.target.value));
+            let filteredUsers = this.state.users?.filter((user) => user.data.userName?.toLowerCase().includes(event.target.value));
             this.setState({ filteredUsers: filteredUsers })
+            if (filteredUsers.length === 0 ) {
+                this.setState({
+                    usersErr: true
+                })
+            } else {
+                this.setState({
+                    usersErr: false
+                })
+            }
         }
-    }
-
+    
 
     render() {
 
@@ -65,23 +53,22 @@ class Search extends Component {
                 <Text style={styles.title}>Search for anybody</Text>
                 <TextInput style={styles.field}
                     keyboardType='default'
-                    placeholder='Filters username or email '
+                    placeholder='Filter by username or email '
                     onChangeText={text => this.setState({ textSearch: text })}
                     value={this.state.textSearch}
                     onChange={(event) => this.controlChanges(event)}
                 />
-               <Text style={styles.error}>{this.state.requiredField}</Text> 
-                <TouchableOpacity onPress={(event) => this.preventSubmit(event)}>
-                    <Text style={styles.button}>Search</Text>
-                </TouchableOpacity>
-                <Text style={styles.noR}>{this.state.usersErr}</Text>
+                {
+                    this.state.usersErr === true ?
+                        <Text style={styles.noR}>Your search could not be found</Text>
+                    :
+                        false
+                } 
                 <FlatList
                     data={this.state.filteredUsers}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) => <TouchableOpacity> <User navigation={this.props.navigation} user={item.data} />  </TouchableOpacity>}
                 />
-
-
             </View>
 
         )
@@ -105,6 +92,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 20,
         alignSelf: 'center',
         marginBottom: 20,
+        shadowColor: 'black',
+        shadowRadius: 35,
+        shadowOpacity: 100
     },
     title: {
         fontSize: 35,

@@ -15,7 +15,9 @@ class Post extends Component {
             commentsCount: props.data.comments.length,
             myLike: false,
             comentarios: [],
-            comment: ''
+            comment: '',
+            userInfo: [],
+            productDescription: ''
         }
     }
 
@@ -30,15 +32,30 @@ class Post extends Component {
                 myLike: true
             })
         };
-
         db.collection('posts')
             .doc(this.props.id)
             .onSnapshot(doc => {
                 this.setState({
-                    comentarios: doc?.data()?.comments
+                    comentarios: doc?.data()?.comments,
+                    productDescription: doc?.data().post
                 })
+                console.log(doc.data());
             })
-
+        
+        console.log(this.props.data.owner);
+        db.collection("users").where("email", '==', this.props.data.owner).onSnapshot((docs) => {
+            let userInfo = [];
+            console.log(docs);
+            docs.forEach((doc) => {
+              userInfo.push({
+                data: doc.data()
+              })
+            });
+            this.setState({
+              userInfo: userInfo,
+            });
+            console.log(this.state.userInfo);
+          });
     }
 
     like() {
@@ -106,23 +123,36 @@ class Post extends Component {
         <View style={styles.container}>
             <View style={styles.usercruz}>
                 <TouchableOpacity style={styles.userNameBox} onPress={()=> this.userProfile()}>
-                    <Text style={styles.userName} >{this.props.data.owner}</Text>
+                    <Image style={styles.profileImg} source={{uri: this.state.userInfo[0]?.data.photo}}/>
+                    <Text style={styles.userName}>{this.state.userInfo[0]?.data.userName}</Text>
                 </TouchableOpacity> 
                 {
                     auth.currentUser.email === this.props.data.owner ?
-                    <TouchableOpacity onPress={() => this.deletePost()}>
-                        <Entypo name="cross" style={styles.cruz} size={50} color="#5c0931" />
-                    </TouchableOpacity> : 
-                    <View></View>
+                        <TouchableOpacity onPress={() => this.deletePost()}>
+                            <Entypo name="cross" style={styles.cruz} size={50} color="#5c0931" />
+                        </TouchableOpacity> 
+                    : 
+                        false
                 }
             </View>
-                    
-            <Image 
-                style={styles.imagen}
-                source={{uri:this.props.data.url}}
-                resizeMode='cover'
-                />
- 
+            {
+                this.state.myLike ?
+                    <TouchableOpacity style={styles.imageBox}>
+                        <Image 
+                        style={styles.imagen}
+                        source={{uri:this.props.data.url}}
+                        resizeMode='cover'
+                        />
+                    </TouchableOpacity>
+                :
+                    <TouchableOpacity style={styles.imageBox} onPress={() => this.like()}>
+                        <Image 
+                            style={styles.imagen}
+                            source={{uri:this.props.data.url}}
+                            resizeMode='cover'
+                            />
+                    </TouchableOpacity>
+            }
             <View style={styles.containerLikeCommDel}>
                 {
                     this.state.myLike ? 
@@ -140,37 +170,37 @@ class Post extends Component {
                     <Text style={styles.likes.text}> {this.state.likesCount} </Text>
                     </View>
                 }
-                        <View style={styles.containerLikeCommDel}>
-                        <TouchableOpacity style={styles.likes} onPress={() => this.navegarComment()}>
-                            <FontAwesome name="comment-o" size={30} color="#5c0931" />
-                        </TouchableOpacity>
-                        <Text style={styles.likes.text}> {this.state.commentsCount} </Text>
-                        </View>
-                    </View>
-
+                <View style={styles.containerLikeCommDel}>
+                    <TouchableOpacity style={styles.likes} onPress={() => this.navegarComment()}>
+                        <FontAwesome name="comment-o" size={25} color="#5c0931" />
+                    </TouchableOpacity>
+                    <Text style={styles.likes.text}> {this.state.commentsCount} </Text>
+                </View>
+            </View>
+            <View style={styles.productDescription}>
+                <Text style={styles.comentarios.boxOwner.owner}>{this.state.userInfo[0]?.data.userName}</Text>
+                <Text> {this.state.productDescription}</Text>
+            </View>
             <View style={styles.cajacomentarios}>
                 <View>
                     <FlatList
                             style={styles.list}
-                            data={this.state.comentarios}
+                            data={this.state.comentarios.slice(0,4)}
                             keyExtractor={( item ) => item.createdAt.toString()}
-                            renderItem={({item}) => <>
-                                                        <View style={styles.comentarios}>
-                                                        <TouchableOpacity style={styles.comentarios.boxOwner} onPress={() => this.props.navigation.navigate('Go Back', {user: item.owner})}>
-                                                            <Text style={styles.comentarios.boxOwner.owner}>{item.owner}: </Text>
-                                                        </TouchableOpacity> 
-                                                        <Text style={styles.comentarios.texto}>{item.description}</Text>
-                                                        </View>
-                                                    </>
-                                                    
-                                        }/>
+                            renderItem={({item}) => 
+                                <>
+                                    <View style={styles.comentarios}>
+                                        <TouchableOpacity style={styles.comentarios.boxOwner} onPress={() => this.props.navigation.navigate('Go Back', {user: item.owner})}>
+                                            <Text style={styles.comentarios.boxOwner.owner}>{item.owner}: </Text>
+                                        </TouchableOpacity> 
+                                        <Text style={styles.comentarios.texto}>{item.description}</Text>
+                                    </View>
+                                </>                  
+                            }/>
                                 
                 </View>
             </View>
-            <View >
-    
-
-                <View style={styles.commentsContainer}>
+            <View style={styles.commentsContainer}>
                 <TextInput
                     style={styles.commentsInput}
                     keyboardType='default'
@@ -178,15 +208,13 @@ class Post extends Component {
                     onChangeText={ text => this.setState({comment:text}) }
                     value={this.state.comment} 
                 />
-
                 <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
-                    <Text style={styles.boton}> Comment </Text>
-                </TouchableOpacity>
-                </View>
-                <TouchableOpacity onPress={() => this.navegarComment()}>
-                    <Text style={styles.textoverloscomentarios}>{this.state.commentsCount} comments </Text>
+                    <Text style={styles.boton}>Comment</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity onPress={() => this.navegarComment()}>
+                <Text style={styles.textoverloscomentarios}>{this.state.commentsCount} Comments </Text>
+            </TouchableOpacity>
         </View> 
     )
   }
@@ -196,19 +224,20 @@ class Post extends Component {
 const styles = StyleSheet.create({
     container:{
         marginVertical: 20,
-        borderWidth: 2,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
         backgroundColor: 'white',
-        paddingVertical: 5,
-        paddingHorizontal: 8,
-        borderColor: '#5c0931',
-        borderRadius: 5
+        borderColor: '#5c0931'
     },
+    imageBox: {
+        height: 400
+    },  
     imagen:{
        height: 400,
        marginBottom: 20,
     },
     containerLikeCommDel:{
-        paddingHorizontal: 0,
+        paddingVertical: 3,
         flexDirection: 'row',
 
     },
@@ -229,6 +258,9 @@ const styles = StyleSheet.create({
         }
     },
     userNameBox: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 5
     },
     userName:{
@@ -237,6 +269,16 @@ const styles = StyleSheet.create({
         fontWeight: 650,
         padding: 5
     },
+    profileImg: {
+        width: 50,
+        height: 50,
+        borderRadius: 40
+    },
+    productDescription: {
+        flexDirection: 'row',
+        paddingLeft: 5.5,
+        paddingVertical: 5
+    },
     list:{
         textAlign: 'center',
     },
@@ -244,7 +286,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 8,
+        paddingVertical: 5,
+        paddingLeft: 5
     },
     containerDataPost:{  
         marginTop: 5,
@@ -263,10 +306,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     cajacomentarios: {
-        borderWidth: 1,
-        borderColor: '#5c0931',
         alignItems: 'flex-start',
-        borderRadius: 2
     },
     comentarios: {
         flexDirection: 'row',
@@ -296,7 +336,8 @@ const styles = StyleSheet.create({
     },
     textoverloscomentarios: {
         color: '#8b0000',
-        textAlign: 'end'
+        textAlign: 'end',
+        padding: 5
     }
 
   })
