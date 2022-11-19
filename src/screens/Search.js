@@ -49,7 +49,7 @@ class Search extends Component {
     controlChanges(event) {
         this.setState({ textSearch: event.target.value })
         
-        if (this.state.event.target.value === '') {
+        if (event.target.value === '') {
             this.setState({ filteredUsers: [] })
         } else {
             const filteredUsers = this.state.users?.filter((user) => user.data.userName?.toLowerCase().includes(event.target.value));
@@ -63,7 +63,6 @@ class Search extends Component {
         return (
             <View style={styles.padre}>
                 <Text style={styles.title}>Search for anybody</Text>
-
                 <TextInput style={styles.field}
                     keyboardType='default'
                     placeholder='Filters username or email '
@@ -75,13 +74,11 @@ class Search extends Component {
                 <TouchableOpacity onPress={(event) => this.preventSubmit(event)}>
                     <Text style={styles.button}>Search</Text>
                 </TouchableOpacity>
-
                 <Text style={styles.noR}>{this.state.usersErr}</Text>
-
                 <FlatList
                     data={this.state.filteredUsers}
                     keyExtractor={item => item.id.toString()}
-                    renderItem={({ item }) => <TouchableOpacity> <User style={styles.results} navigation={this.props.navigation} user={item.data} />  </TouchableOpacity>}
+                    renderItem={({ item }) => <TouchableOpacity> <User navigation={this.props.navigation} user={item.data} />  </TouchableOpacity>}
                 />
 
 
@@ -103,40 +100,33 @@ const styles = StyleSheet.create({
         color: '#535353',
         width: '90%',
         borderRadius: 5,
-        height: '8%',
+        height: 40,
         paddingLeft: 10,
         shadowOpacity: 20,
         alignSelf: 'center',
         marginBottom: 20,
     },
     title: {
-        fontSize: 50,
+        fontSize: 35,
         textShadowRadius: 10,
         backgroundColor: '#5c0931',
-        borderRadius: 300,
+        borderRadius: 10,
         color: 'white',
-        marginBottom: 20,
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10
+        padding: 15,
+        margin: 15
+
     },
     button: {
-        fontSize: 40,
+        fontSize: 20,
         color: 'white',
         backgroundColor: '#5c0931',
         textDecorationStyle: 'bold',
-        marginBottom: 10,
-        marginTop: 10,
+        margin: 10,
         padding: 3,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        borderRadius: 7,
+        borderRadius: 4,
         shadowColor: 'black',
         shadowRadius: 35,
         shadowOpacity: 100,
-    },
-    results: {
-        fontSize: 35,
     },
     error: {
         fontSize: 15,

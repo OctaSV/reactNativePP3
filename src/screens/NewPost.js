@@ -1,4 +1,5 @@
-import MyCamera from '../components/MyCamera'
+import MyCamera from '../components/MyCamera';
+import Img from '../components/Img';
 import React, { Component } from 'react';
 import { Text, TextInput, TouchableOpacity, StyleSheet, Image, View } from 'react-native';
 import { db, auth } from '../firebase/Config'
@@ -44,21 +45,25 @@ class NewPost extends Component {
     return (
       <>
       {
-        this.state.compCamara 
-        ? <MyCamera onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
-        : <View style={styles.container}>
-          <Text style={styles.textEnc}>Estas por subir tu posteo!</Text>
-        <Image style={styles.imagen} source={{uri: this.state.urlFoto}}/>
-        <TextInput
-        style={styles.form}
-        keyboardType='default'
-        placeholder='Descripcion de tu posteo'
-        onChangeText={ text => this.setState({posteo:text}) }
-        value={this.state.posteo} />
-        <TouchableOpacity style={styles.text} onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
-          <Text style={styles.text}>Subir a FNATIC</Text>
-        </TouchableOpacity>
-        </View>
+        this.state.compCamara ?
+            <>
+              <MyCamera onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
+              <Img onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
+            </> 
+          : 
+            <View style={styles.container}>
+              <Text style={styles.textEnc}>Estas por subir tu posteo!</Text>
+              <Image style={styles.imagen} source={{uri: this.state.urlFoto}}/>
+              <TextInput
+              style={styles.form}
+              keyboardType='default'
+              placeholder='Descripcion de tu posteo'
+              onChangeText={ text => this.setState({posteo:text}) }
+              value={this.state.posteo} />
+              <TouchableOpacity style={styles.text} onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
+                <Text style={styles.text}>Subir a FNATIC</Text>
+              </TouchableOpacity>
+            </View>
       }
     </>
     )

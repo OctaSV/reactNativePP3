@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, Image} from 'react-native';
-import { storage } from '../firebase/config';
+import { storage } from '../firebase/Config';
 import * as ImagePicker from 'expo-image-picker';
 
 class Img extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            image: ''
+            imageEmpty: true
         }
     }
 
@@ -17,45 +17,33 @@ class Img extends Component {
         mediaTypes: ImagePicker.MediaTypeOptions.All
         })
         .then(image => {
-            this.setState({
-                 image: image.uri
-            })
+            this.props.onImageUpload(image.uri)
+            this.setState({imageEmpty: false})
         })
-        .catch(error => console.log(e))
-    };
-
-    saveImage() {
-        fetch(this.state.image)
-            .then(response => response.blob()) //representacion binaria de mi imagen         
-            .then(image => {
-                const ref = storage.ref(`avatars/${Date.now()}.jpg`)
-                ref.put(image) // subo a firebase el archivo
-                    .then(() => {
-                        ref.getDownloadURL()
-                        .then(urlImage => {
-                            this.props.onImageUpload(urlImage);
-                        })
-                        .catch(error => console.log(error))
-                    })
-                    .catch(error => console.log(error))
-            })
-            .catch(error => console.log(error))
+        .catch(error => console.log(error))
     }
 
     removeImage() {
-        this.setState({
-            image: ''
-        })
+        let image = ''
+        this.props.onImageUpload(image)
+        this.setState({imageEmpty: true})
     } 
 
-      render(){
+    render(){
         return (
             <View >
                 <View >
                     <TouchableOpacity onPress={() => this.pickImage()}>
-                        <Text> Avatar </Text> 
+                        <Text> Choose a picture </Text> 
                     </TouchableOpacity>
-                    {<Image source={{ uri: this.state.image }} style={{ width: 50, height: 50 }} />}
+                    {
+                        this.state.imageEmpty !== true ?
+                            <TouchableOpacity onPress={() => this.removeImage()}>
+                                <Text> Delete </Text> 
+                            </TouchableOpacity>
+                        :
+                            false
+                    }
                 </View> 
             </View>
         );

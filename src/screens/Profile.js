@@ -6,14 +6,14 @@ import { FontAwesome } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-export default class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userInfo: [],
       userPosts: [],
       loader: true,
-      user: '',
+      userEmail: '',
       password: '',
       email: ''
     }
@@ -22,15 +22,15 @@ export default class Profile extends Component {
   getUserData() {
     let user = ''
     if (this.props.route.params?.user) {
-      user = this.props.route.params.user;
-
+      user = this.props.route.params.user
     } else {
-      user = auth.currentUser.email;
+      user = auth.currentUser.email
     }
     //notar que si el mail esta mal escrito, te lo completa ejemplo nanci@gmail.con te devuelve nanci@gmail.com. Ademas si el mail es
     //USUARIOREAL@gmail.com te devuelve usuarioreal@gmail.com 
     db.collection("users").where("email", '==', user).onSnapshot((docs) => {
       let userInfo = [];
+      console.log(docs);
       docs.forEach((doc) => {
         userInfo.push({
           data: doc.data()
@@ -39,19 +39,15 @@ export default class Profile extends Component {
       this.setState({
         userInfo: userInfo,
         loader: false,
-        user: user
+        userEmail: user
       });
-      console.log(user)
+      this.getUserPosts(user)
     });
+
   }
 
-  getUserPosts() {
-    let user = ''
-    if (this.props.route.params?.user) {
-      user = this.props.route.params.user;
-    } else {
-      user = auth.currentUser.email;
-    }
+  getUserPosts(user) {
+    console.log(user);
     db.collection("posts").where("owner", '==', user).onSnapshot((docs) => {
       let userPosts = [];
       docs.forEach((doc) => {
@@ -74,13 +70,7 @@ export default class Profile extends Component {
 
 
   deleteAcc() {
-    <View>
-    <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
-    <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
-    </View>
-    email = this.state.email
-    password = this.state.password
-    const credential = auth.signInWithEmailAndPassword(email,password)
+    const credential = auth.signInWithEmailAndPassword(email, password)
     auth.currentUser.reauthenticateWithCredential(credential).then(() => {
       console.log(credential)
     }).then(() => {
@@ -94,16 +84,11 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    this.getUserPosts()
     this.getUserData()
   }
 
 
-
   render() {
-    console.log(this.props.user)
-
-
     return (
 
       <React.Fragment>
@@ -111,20 +96,22 @@ export default class Profile extends Component {
           this.state.loader ?
             <ActivityIndicator styles={styles.activity} size='large' color='black' />
             :
-            this.state.user == auth.currentUser.email ?
               <View style={styles.container}>
                 <View style={styles.pageTitle}>
-                  <View style={styles.comandosOwner}>
-                    <TouchableOpacity style={styles.comandosOwner.margen} onPress={this.deleteAcc() }> <Entypo name="trash" size={30} color="white" /></TouchableOpacity>
-                    <TouchableOpacity onPress={this.logOut()}> <FontAwesome name="sign-out" size={30} color="white" /> </TouchableOpacity>
-                  </View>
+                  {this.state.userEmail === auth.currentUser.email ?
+                    <View style={styles.comandosOwner}>
+                      <TouchableOpacity style={styles.comandosOwner.margen} onPress={() => this.deleteAcc()}> <Entypo name="trash" size={30} color="white" /></TouchableOpacity>
+                      <TouchableOpacity onPress={() => this.logOut()}> <FontAwesome name="sign-out" size={30} color="white" /> </TouchableOpacity>
+                    </View>
+                  :
+                    false
+                  }   
                   <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
                   <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
                   <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
-
                 </View>
-
                 <FlatList
+                style={styles.flat}
                   //solucionar error virtualized list 
                   data={this.state.userPosts}
                   keyExtractor={(item) => item.id}
@@ -134,28 +121,8 @@ export default class Profile extends Component {
                     data={item.data}
                     url={item.url} />
                   } />
-              </View> :
-              <View style={styles.container}>
-                <View style={styles.pageTitle}>
-                  <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
-                  <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
-                  <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
-                </View>
-
-                <FlatList
-                  //solucionar error virtualized list 
-                  data={this.state.userPosts}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => <Post
-                    navigation={this.props.navigation}
-                    id={item.id}
-                    data={item.data}
-                    url={item.url} />
-                  } />
-              </View>
+              </View> 
         }
-
-
       </React.Fragment>
     )
   }
@@ -199,6 +166,11 @@ const styles = StyleSheet.create({
     {
       marginRight: 10
     }
+  },
+  flat: {
+    paddingHorizontal:10
   }
 
 })
+
+export default Profile;

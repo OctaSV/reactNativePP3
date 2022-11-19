@@ -65,7 +65,9 @@ class Login extends Component{
                                 <Text style={styles.title}>Welcome, fanatic</Text>
                             </TouchableOpacity>
                             <View style={styles.box}>
-                                <Text style={styles.title2}>FNATIC</Text>
+                                <View style={styles.boxtitle2}>
+                                    <Text style={styles.title2}>FNATIC</Text>
+                                </View>
                                 <View style={styles.box2}>
                                     <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
                                     <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
@@ -101,23 +103,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     title: {
-        fontSize: 25
+        fontSize: 25,
+        fontWeight: 'bold'
     },
     box: {
-        flex: 3,
+        flex: 2,
         backgroundColor: 'white',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center'
     },
     box2: {
-        flex: 1,
-        justifyContent: 'space-evenly',
+        flex: 7,
         alignItems: 'center',
+        justifyContent: 'space-evenly'
     },
+    boxtitle2: {
+        flex: 1.5,
+        justifyContent: 'center'
+    },  
     title2: {
         fontSize: 30,
-        padding: 10
+        padding: 10,
+        fontWeight: 350,
+        color: '#5c0931'
     },
     field: {
         borderWidth: 1,

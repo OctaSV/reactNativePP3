@@ -5,9 +5,7 @@ import React, { Component } from 'react'
 class User extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-    
-        }
+        this.state = {}
     }
 
     user() {
@@ -16,21 +14,25 @@ class User extends Component {
 
    
     render() {
-       console.log(this.props.user.photo)
         return (
-          <TouchableOpacity onPress={() => this.user()}> <View style={styles.padreR}>  <Image source={this.props.user.photo} style={styles.imagen}/> <Text style={styles.texto}> Email: {this.props.user.email} Username: {this.props.user.userName} </Text> </View>
+          <TouchableOpacity onPress={() => this.user()}> 
+            <View style={styles.padreR}> 
+                <Image source={this.props.user.photo} style={styles.imagen}/> 
+                <Text style={styles.texto}> Email: {this.props.user.email} Username: {this.props.user.userName} </Text>
+            </View>
           </TouchableOpacity>  
           )
     }
 }
+
 const styles = StyleSheet.create({ 
     texto: {
-        fontSize: 25,
         alignSelf: 'center',
     },
     imagen: {
         height: 70,
         width: 70,
+        margin: 10,
         borderRadius: 30,
         borderColor: 'white'
       },

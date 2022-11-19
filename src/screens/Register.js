@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native'
 import {auth, db} from '../firebase/Config'
-import {storage} from '../firebase/Config'
-import * as ImagePicker from 'expo-image-picker';
 import MyCamera from '../components/MyCamera';
 import Img from '../components/Img';
 
@@ -14,87 +12,58 @@ class Register extends Component{
             password: '',
             userName: '',
             biography: '',
+            urlAvatarNoBlob: '',
+            urlAvatar: '',
             logued: false,
             emailIncomplete: false,
             passwordIncomplete: false,
             userNameIncomplete: false,
-            errorMessage: '',
-            urlAvatarNoBlob: '',
-            urlAvatar: '',
-            useCam: '',
-            urlCamPhoto: '',
-            compCamara: true
+            useCam: false,
+            errorMessage: ''
         }
     }
 
-    /* pickImage(){
-        // No permissions request is necessary for launching the image library
-        ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All
+    onImageUpload(image){
+        this.setState({
+            urlAvatarNoBlob: image
         })
-        .then((result) => {
-            this.setState({
-                urlAvatarNoBlob: result.uri
+    }
+
+    savePhoto() {
+        fetch(this.state.urlAvatarNoBlob) // me permite acceder el contenido de un archivo
+            .then(res => res.blob()) // el metodo blob me permite tener la representacion binaria de mi imagen         
+            .then(image => {
+                const ref = storage.ref(`avatars/${Date.now()}.jpg`)
+                ref.put(image) // subo a firebase el archivo
+                    .then(() => {
+                        ref.getDownloadURL()
+                            .then(url => {
+                                this.setState({
+                                    urlAvatar: url
+                                })
+                            })
+                            .catch(e => console.log(e))
+                    })
+                    .catch(e => console.log(e))
             })
-            console.log(result);
-            
-        }).catch((err) => {
-            console.log(err);
-        });
-    } */
-    
-    takePhoto(){
+            .catch(e => console.log(e))
+    }
+
+    allowTakePicture(){
         this.setState({
             useCam: true
         })
     }
 
-/*     removePickImage(){
-        this.setState({
-            urlAvatarNoBlob: '',
-            urlCamPhoto: ''
-        })
-    } */
-
-    onImageUpload(url){
-        this.setState({
-            avatarUrl: url
-        })
-    }
-    
-    urlCam(urlMyCamera){
-        console.log(urlMyCamera);
-        this.setState({
-            urlAvatarNoBlob: urlMyCamera
-        })
-    }
-
-/*     savePicture(){
-        fetch(this.state.urlAvatarNoBlob)
-        .then(response => response.blob())
-        .then(image => {
-            const ref = storage.ref(`avatars/${Date.now()}.jpg`)
-            ref.put(image)
-            .then(response =>{
-                ref.getDownloadURL()
-                .then(url => this.setState({urlAvatar: url}))
-                .catch(error => console.log(error))
-            })
-            .catch(error => console.log(error))
-        })
-        .catch(error => console.log(error))
-    } */
-
-    signUp(email, password, userName, biography, photo, CamImage, urlCamPhoto){
+    signUp(email, password, userName, biography, avatarUrl){
         auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
-            this.savePicture()
             db.collection('users').add({
                 email: email,
                 password: password,
                 userName: userName,
                 biography: biography, 
-                photo: photo,
+                photo: avatarUrl,
                 createdAt: Date.now()
             }) 
         })
@@ -154,16 +123,16 @@ class Register extends Component{
                             <TextInput style={styles.field} keyboardType='default' placeholder='Biography' onChangeText={text => this.setState({biography: text})} value={this.state.biography}/>
                         </View>
                         <View style={styles.avatarBox}>
-                            <Img onImageUpload={(url => this.onImageUpload())}/>
-{/*                             {this.state.useCam ? 
-                                <MyCamera registerCam={this.state.useCam} urlCam={this.urlCam} onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.cam}/> 
-                            : 
-                                <Image source={this.state.urlAvatarNoBlob === '' && this.state.urlCamPhoto === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob !== '' ? this.state.urlAvatarNoBlob : this.state.urlCamPhoto}} style={styles.avatar}/>}
-                                {this.state.urlAvatarNoBlob !== '' ? <TouchableOpacity onPress={()=> this.removePickImage()} style={styles.deleteAvatar}><Text>Remove</Text></TouchableOpacity> : <TouchableOpacity style={styles.addAvatar} onPress={()=> this.pickImage()}><Text>Avatar</Text></TouchableOpacity>}
+                            {
+                                this.state.useCam === false ?
                                 <>
-                                    <Image style={styles.image} source={{uri: this.state.urlCamPhoto}}/>
-                                    {this.state.urlCamPhoto !== '' ? <TouchableOpacity onPress={()=> this.removePickImage()} style={styles.deleteAvatar}><Text>Remove</Text></TouchableOpacity> : <TouchableOpacity style={styles.addAvatar} onPress={()=> this.takePhoto()}><Text>Take a photo</Text></TouchableOpacity>}
-                                </> */}
+                                    <Image style={styles.avatar} source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob}}/>
+                                    <Img onImageUpload={url => this.onImageUpload(url)}/>
+                                    <TouchableOpacity onPress={() => this.allowTakePicture()}><Text>Take a picture</Text></TouchableOpacity>
+                                </>
+                                :
+                                    <MyCamera onImageUpload={(url => this.onImageUpload(url))}/>
+                            }
                         </View>
                     </View>
                     <View style={styles.submits}>
@@ -177,7 +146,7 @@ class Register extends Component{
                                 </View>
                             :
                                 <View style={styles.submits}> 
-                                    <TouchableOpacity style={styles.submitBox} onPress={() => this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, this.state.urlAvatarNoBlob)}>
+                                    <TouchableOpacity style={styles.submitBox} onPress={() => (this.savePhoto(), this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, this.state.urlAvatar))}>
                                         <Text> Submit </Text>
                                     </TouchableOpacity>
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}
@@ -190,7 +159,7 @@ class Register extends Component{
                 </View>
             </View>
         );
-       }
+    }
 }
 
 const styles = StyleSheet.create({
@@ -201,8 +170,8 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     box: {
-        height: '60%',
-        width: '90%',
+        height: '95%',
+        width: '95%',
         textAlign: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
@@ -214,7 +183,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     title: {
-        fontSize: 50
+        fontSize: 50,
+        fontWeight: 350,
+        color: '#5c0931'
     },
     containerInfo: {
         flex: 3,

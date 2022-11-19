@@ -19,7 +19,7 @@ class MyCamera extends Component {
 
     componentDidMount(){
         Camera.requestCameraPermissionsAsync()
-        .then(response => {
+        .then(() => {
             this.setState({
                 permission: true
             })
@@ -62,11 +62,6 @@ class MyCamera extends Component {
             mostrarCamara:true
         })
     }
-
-    saveRegisterPicture(){
-        this.props.urlCam(this.state.urlFoto)
-    }
-
 
   render() {
     return (
