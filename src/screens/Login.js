@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import firebase from 'firebase';
 import {auth, GoogleProvider} from '../firebase/Config';
-import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
 
 class Login extends Component{
     constructor(props){
@@ -62,23 +61,25 @@ class Login extends Component{
                         <ActivityIndicator size='large' color='#5c0931'/>
                     :
                         <View style={styles.container}>
-                            <TouchableOpacity onPress={ ()=> this.props.navigation.navigate('TabNavigation')}>
-                                <Text style={styles.title}>Welcome fanatic</Text>
+                            <TouchableOpacity onPress={ ()=> this.props.navigation.navigate('TabNavigation')} style={styles.titleBox}>
+                                <Text style={styles.title}>Welcome, fanatic</Text>
                             </TouchableOpacity>
                             <View style={styles.box}>
-                                <Text style={styles.titleBox}>FNATIC</Text>
-                                <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
-                                <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
-                                <TouchableOpacity onPress={() => this.signIn(this.state.email, this.state.password)} >
-                                    <Text style={styles.submit}> Submit </Text>
-                                </TouchableOpacity>
-                                <Text>{this.state.errorMessage}</Text>
-                                <TouchableOpacity onPress={() => this.signGoogle()}>                            
-                                    <Text>Google</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>                            
-                                    <Text>You are not in yet?</Text>
-                                </TouchableOpacity>
+                                <Text style={styles.title2}>FNATIC</Text>
+                                <View style={styles.box2}>
+                                    <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
+                                    <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
+                                    <TouchableOpacity onPress={() => this.signIn(this.state.email, this.state.password)} >
+                                        <Text style={styles.submit}> Submit </Text>
+                                    </TouchableOpacity>
+                                    <Text>{this.state.errorMessage}</Text>
+                                    <TouchableOpacity onPress={() => this.signGoogle()}>                            
+                                        <Text>Google</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>                            
+                                        <Text>You are not in yet?</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                 }
@@ -90,51 +91,47 @@ class Login extends Component{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '100vw',
-        height: '100vh',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingStart: 100,
-        paddingEnd: 100
-    },
-    title: {
-        flex: 1,
-        fontSize: 125,
-        width: '60vw',
+        allowContent : "center",
+        paddingHorizontal: 20,
+        paddingBottom: 40,
     },
     titleBox: {
-        fontSize: 40,
-        paddingBottom: 10
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    title: {
+        fontSize: 25
     },
     box: {
-        flex: 2,
-        width: '40vw',
-        height: '50vh',
-        justifyContent: 'space-around',
-        textAlign: 'center',
-        alignItems: 'center',
+        flex: 3,
         backgroundColor: 'white',
-        padding: 15,
-        borderRadius: 15
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center'
+    },
+    box2: {
+        flex: 1,
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+    },
+    title2: {
+        fontSize: 30,
+        padding: 10
     },
     field: {
-        marginTop: 5,
-        padding: 7,
-        fontSize: 15,
         borderWidth: 1,
         borderColor: '#CCCCCC',
         color: '#535353',
-        width: '90%',
-        borderRadius: 5,
-        height: '10%',
+        borderRadius: 2,
         paddingLeft: 10,
         shadowOpacity: 20
     },
     submit: {
-        padding: 20,
+        padding: 10,
         color: 'white',
         backgroundColor: '#5c0931',
-        borderRadius: 15
+        borderRadius: 10
     }
 })
 

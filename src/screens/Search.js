@@ -27,6 +27,7 @@ class Search extends Component {
             }
         )
     }
+
     preventSubmit(event) {
         event.preventDefault()
         this.setState({ usersErr: '' });
@@ -47,6 +48,13 @@ class Search extends Component {
 
     controlChanges(event) {
         this.setState({ textSearch: event.target.value })
+        
+        if (this.state.event.target.value === '') {
+            this.setState({ filteredUsers: [] })
+        } else {
+            const filteredUsers = this.state.users?.filter((user) => user.data.userName?.toLowerCase().includes(event.target.value));
+            this.setState({ filteredUsers: filteredUsers })
+        }
     }
 
     userProfile() {

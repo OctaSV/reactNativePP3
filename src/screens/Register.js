@@ -4,6 +4,7 @@ import {auth, db} from '../firebase/Config'
 import {storage} from '../firebase/Config'
 import * as ImagePicker from 'expo-image-picker';
 import MyCamera from '../components/MyCamera';
+import Img from '../components/Img';
 
 class Register extends Component{
     constructor(props){
@@ -26,7 +27,7 @@ class Register extends Component{
         }
     }
 
-    pickImage(){
+    /* pickImage(){
         // No permissions request is necessary for launching the image library
         ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All
@@ -40,7 +41,7 @@ class Register extends Component{
         }).catch((err) => {
             console.log(err);
         });
-    }
+    } */
     
     takePhoto(){
         this.setState({
@@ -48,17 +49,16 @@ class Register extends Component{
         })
     }
 
-    removePickImage(){
+/*     removePickImage(){
         this.setState({
             urlAvatarNoBlob: '',
             urlCamPhoto: ''
         })
-    }
+    } */
 
     onImageUpload(url){
         this.setState({
-          urlCamPhoto: url,
-          compCamara: false
+            avatarUrl: url
         })
     }
     
@@ -69,7 +69,7 @@ class Register extends Component{
         })
     }
 
-    savePicture(){
+/*     savePicture(){
         fetch(this.state.urlAvatarNoBlob)
         .then(response => response.blob())
         .then(image => {
@@ -83,7 +83,7 @@ class Register extends Component{
             .catch(error => console.log(error))
         })
         .catch(error => console.log(error))
-    }
+    } */
 
     signUp(email, password, userName, biography, photo, CamImage, urlCamPhoto){
         auth.createUserWithEmailAndPassword(email, password)
@@ -154,18 +154,16 @@ class Register extends Component{
                             <TextInput style={styles.field} keyboardType='default' placeholder='Biography' onChangeText={text => this.setState({biography: text})} value={this.state.biography}/>
                         </View>
                         <View style={styles.avatarBox}>
-                            {this.state.useCam ? 
+                            <Img onImageUpload={(url => this.onImageUpload())}/>
+{/*                             {this.state.useCam ? 
                                 <MyCamera registerCam={this.state.useCam} urlCam={this.urlCam} onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.cam}/> 
                             : 
-                                <Image source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob}} style={styles.avatar}/>}
+                                <Image source={this.state.urlAvatarNoBlob === '' && this.state.urlCamPhoto === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob !== '' ? this.state.urlAvatarNoBlob : this.state.urlCamPhoto}} style={styles.avatar}/>}
                                 {this.state.urlAvatarNoBlob !== '' ? <TouchableOpacity onPress={()=> this.removePickImage()} style={styles.deleteAvatar}><Text>Remove</Text></TouchableOpacity> : <TouchableOpacity style={styles.addAvatar} onPress={()=> this.pickImage()}><Text>Avatar</Text></TouchableOpacity>}
-
                                 <>
                                     <Image style={styles.image} source={{uri: this.state.urlCamPhoto}}/>
                                     {this.state.urlCamPhoto !== '' ? <TouchableOpacity onPress={()=> this.removePickImage()} style={styles.deleteAvatar}><Text>Remove</Text></TouchableOpacity> : <TouchableOpacity style={styles.addAvatar} onPress={()=> this.takePhoto()}><Text>Take a photo</Text></TouchableOpacity>}
-                                </>
-                            
-
+                                </> */}
                         </View>
                     </View>
                     <View style={styles.submits}>
@@ -185,7 +183,7 @@ class Register extends Component{
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}
                                 </View>     
                         }
-                        <TouchableOpacity onPress={ ()=> this.props.navigation.navigate('Login')}>
+                        <TouchableOpacity onPress={()=> this.props.navigation.pop()}>
                             <Text>You already have an account?</Text>
                         </TouchableOpacity>
                     </View>
@@ -197,126 +195,104 @@ class Register extends Component{
 
 const styles = StyleSheet.create({
     container: {
-        flexWrap: 'wrap',
-        width: '100vw',
-        height: '100vh',
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingStart: 100,
-        paddingEnd: 100
+        flexWrap: 'wrap',
     },
     box: {
-        width: '70%',
         height: '60%',
-        flexWrap: 'wrap',
+        width: '90%',
         textAlign: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
-        padding: 15,
-        borderRadius: 5
+        borderRadius: 5,
+        paddingBottom: 15
     },
     titleBox: {
         flex: 1,
         justifyContent: 'center'
     },
     title: {
-        fontSize: 80
+        fontSize: 50
     },
     containerInfo: {
         flex: 3,
         width: '100%',
-        flexDirection: 'row',
+        flexWrap: 'wrap',
         alignItems: 'center',
     },
     field: {
-        width: 400,
-        marginTop: 5,
-        padding: 7,
         paddingLeft: 5,
-        fontSize: 15,
-        borderRadius: 5,
+        borderRadius: 2,
         borderWidth: 1,
         borderColor: '#CCCCCC',
         borderLeftColor: '#000000',   
         color: '#535353',
-        textAlign: 'center'
+        textAlign: 'center',
+        margin: 5
     },
     incompletedField: {
-        width: 400,
-        marginTop: 5,
-        padding: 7,
         paddingLeft: 5,
-        fontSize: 15,
         borderWidth: 1,
         borderColor: 'red',
         borderLeftColor: 'redx', 
-        borderRadius: 5,  
+        borderRadius: 2,  
         color: 'red',
-        textAlign: 'center'
+        textAlign: 'center',
+        margin: 5
     },
     submits: {
         flex: 1,
-        width: '100%',
-        height: '10%',
         alignItems: 'center',
         justifyContent: 'center'
     },
     submitBox: {
-        width: '20%',
-        padding: 10,
+        padding: 5,
         backgroundColor: '#5c0931',
-        borderRadius: 5
+        borderRadius: 3
     },
     notSubmitBox: {
-        width: '20%',
-        padding: 10,
         backgroundColor: 'lightgray',
-        borderRadius: 5
+        padding: 3,
+        borderRadius: 3
     },
     formContainer: {
-        flex: 1,
-        width: '40%',
-        alignItems: 'center'
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     avatarBox: {
-        width: '50%',
-        alignItems: 'center'
+        flex: 3,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     addAvatar: {
-        width: 100,
-        height: 30,
         justifyContent: 'center',
-        padding: 15,
+        padding: 3,
         backgroundColor: '#5c0931',
-        borderRadius: 8,
-        marginBottom: 10
+        borderRadius: 3,
+        margin: 5
     },
     avatar: {
-        width: 150,
-        height: 150,
+        width: 50,
+        height: 50,
         borderRadius: 400,
         backgroundColor: 'gray',
         marginBottom: 5
     },
     deleteAvatar: {
-        width: 100,
-        height: 30,
-        padding: 15,
+        padding: 3,
         justifyContent: 'center',
         backgroundColor: '#5c0931',
-        borderRadius: 8,
-        marginBottom: 10
+        borderRadius: 3
     },
     cam:{
-        width: 150,
-        height: 150,
+        width: 50,
+        height: 50,
         borderRadius: 400,
         backgroundColor: 'gray',
         marginBottom: 5
-    },
-    image:{
-      width:'200px',
-      height: '300px'
     },
     error: {
         color: 'red'
