@@ -40,17 +40,16 @@ class Home extends Component {
                 <Text style={styles.pageTitle}>FNATIC</Text>
                 {
                 this.state.loader ? 
-                    <ActivityIndicator size='large' color='#5c0931'/>  
+                    <ActivityIndicator style={styles.activity} size='large' color='#5c0931'/>  
                 : 
                     <View style={styles.container}>
                         {this.state.allPosts.length === 0 ? 
                             <Text>Aun no hay posteos </Text>
                         :
-                            <FlatList 
-                            style={styles.flatlist}    
+                            <FlatList  
                             data={this.state.allPosts}
                             keyExtractor={item => item.id.toString()}
-                            renderItem={({item}) => <Post style={styles.flatlist}navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
+                            renderItem={({item}) => <Post navigation={this.props.navigation} id={item.id} data={item.data} url={item.url}/>} />
                         }
                     </View>
                 }
@@ -68,7 +67,12 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 40,
         padding: 15,
-        backgroundColor: '#5c0931'
+        backgroundColor: '#5c0931',
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    activity: {
+       marginTop: 250
     }
 })
 

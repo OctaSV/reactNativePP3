@@ -2,6 +2,9 @@ import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, TextInput, A
 import React, { Component } from 'react'
 import { db, auth } from '../firebase/Config'
 import Post from '../components/Post';
+import { FontAwesome } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -10,7 +13,9 @@ export default class Profile extends Component {
       userInfo: [],
       userPosts: [],
       loader: true,
-
+      user: '',
+      password: '',
+      email: ''
     }
   }
 
@@ -18,6 +23,7 @@ export default class Profile extends Component {
     let user = ''
     if (this.props.route.params?.user) {
       user = this.props.route.params.user;
+
     } else {
       user = auth.currentUser.email;
     }
@@ -27,13 +33,13 @@ export default class Profile extends Component {
       let userInfo = [];
       docs.forEach((doc) => {
         userInfo.push({
-
           data: doc.data()
         })
       });
       this.setState({
         userInfo: userInfo,
-        loader: false
+        loader: false,
+        user: user
       });
       console.log(user)
     });
@@ -67,6 +73,26 @@ export default class Profile extends Component {
   }
 
 
+  deleteAcc() {
+    <View>
+    <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
+    <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
+    </View>
+    email = this.state.email
+    password = this.state.password
+    const credential = auth.signInWithEmailAndPassword(email,password)
+    auth.currentUser.reauthenticateWithCredential(credential).then(() => {
+      console.log(credential)
+    }).then(() => {
+      auth.currentUser.delete().then(() => {
+        this.props.navigation.navigate('Login')
+      })
+    })
+    .catch((error) => {
+     console.log(error)
+    });
+  }
+
   componentDidMount() {
     this.getUserPosts()
     this.getUserData()
@@ -75,39 +101,58 @@ export default class Profile extends Component {
 
 
   render() {
+    console.log(this.props.user)
 
-    
 
     return (
-      
+
       <React.Fragment>
         {
           this.state.loader ?
-            <ActivityIndicator size='large' color='black' />
+            <ActivityIndicator styles={styles.activity} size='large' color='black' />
             :
-            <View style={styles.containerr}>
-              <View style={styles.pageTitle}>
-                <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
-                <Text style={styles.texto}>{this.state.userInfo[0]?.data.biography}</Text>
-                <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
-              </View>
+            this.state.user == auth.currentUser.email ?
+              <View style={styles.container}>
+                <View style={styles.pageTitle}>
+                  <View style={styles.comandosOwner}>
+                    <TouchableOpacity style={styles.comandosOwner.margen} onPress={this.deleteAcc() }> <Entypo name="trash" size={30} color="white" /></TouchableOpacity>
+                    <TouchableOpacity onPress={this.logOut()}> <FontAwesome name="sign-out" size={30} color="white" /> </TouchableOpacity>
+                  </View>
+                  <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
+                  <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
+                  <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
 
-              <FlatList
-                //solucionar error virtualized list
-               style={styles.flatList}
-               numColumns={3}
-                contentContainerStyle={{
-                  marginBottom: '15px',
-                  alignSelf: 'center',
-                } }
-                scrollEnabled
-                data={this.state.userPosts}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <Post style={styles.container} navigation={this.props.navigation} id={item.id} data={item.data} url={item.url} />} />
-              <TouchableOpacity onPress={() => this.logOut()}>
-                <Text style={styles.title}>logOut</Text>
-              </TouchableOpacity>
-            </View>
+                </View>
+
+                <FlatList
+                  //solucionar error virtualized list 
+                  data={this.state.userPosts}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => <Post
+                    navigation={this.props.navigation}
+                    id={item.id}
+                    data={item.data}
+                    url={item.url} />
+                  } />
+              </View> :
+              <View style={styles.container}>
+                <View style={styles.pageTitle}>
+                  <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
+                  <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
+                  <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
+                </View>
+
+                <FlatList
+                  //solucionar error virtualized list 
+                  data={this.state.userPosts}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => <Post
+                    navigation={this.props.navigation}
+                    id={item.id}
+                    data={item.data}
+                    url={item.url} />
+                  } />
+              </View>
         }
 
 
@@ -117,18 +162,6 @@ export default class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
-
-  containerr: {
-    height: '100vh',
-    width: '100vw',
-    margin: 'unset'
-  },
-  imagen: {
-    height: '100px',
-    width: '100px',
-    borderRadius: '10px',
-    borderColor: 'white'
-  },
   pageTitle: {
     color: 'white',
     fontSize: 40,
@@ -136,17 +169,36 @@ const styles = StyleSheet.create({
     backgroundColor: '#5c0931',
     alignItems: 'center'
   },
+  imagen: {
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    borderColor: 'white'
+  },
   texto: {
     fontWeight: 'bold',
-    color: 'white'
-
+    color: 'white',
+    fontSize: 17,
+    bio: {
+      fontWeight: 'normal',
+      color: 'white',
+      fontSize: 15
+    }
   },
-
-  flatList: {
-    
+  activity: {
+    marginTop: 250
   },
   container: {
-
+    flex: 1
+  },
+  comandosOwner: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    margen:
+    {
+      marginRight: 10
+    }
   }
 
 })

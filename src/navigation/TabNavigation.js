@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 
 function TabNavigation() {
     return (
-        <Tab.Navigator screenOptions={{ tabBarShowLabel: false, /*tabBarStyle: {flex :1, width: '5vw', height: '10vh', position: screenTop}, tabBarActiveTintColor: 'red'*/ tabBarInactiveTintColor: 'green' }}>
+        <Tab.Navigator screenOptions={{ tabBarShowLabel: false,  tabBarInactiveTintColor: 'green' }}>
             <Tab.Screen 
                 name="Home"
                 component={Home}
@@ -38,10 +38,10 @@ function TabNavigation() {
                 name="Search" 
                 component={Search} 
                 options={{ 
-                        tabBarIcon: () => <FontAwesome name='search' size={24} color="black" /> 
+                        tabBarIcon: () => <FontAwesome name='search' size={24} color="black" /> ,
+                        headerShown: false 
                     }}/>
         </Tab.Navigator>
-        //Agregar foto usuario
     )
 
 }
