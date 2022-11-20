@@ -25,7 +25,8 @@ class Register extends Component{
 
     onImageUpload(image){
         this.setState({
-            urlAvatarNoBlob: image
+            urlAvatarNoBlob: image,
+            useCam: false
         })
     }
 
@@ -58,6 +59,7 @@ class Register extends Component{
     signUp(email, password, userName, biography, avatarUrl){
         auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
+            this.savePhoto()
             db.collection('users').add({
                 email: email,
                 password: password,
@@ -123,15 +125,19 @@ class Register extends Component{
                             <TextInput style={styles.field} keyboardType='default' placeholder='Biography' onChangeText={text => this.setState({biography: text})} value={this.state.biography}/>
                         </View>
                         <View style={styles.avatarBox}>
+                            <Image style={styles.avatar} source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob}}/>
                             {
                                 this.state.useCam === false ?
-                                <>
-                                    <Image style={styles.avatar} source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob}}/>
-                                    <Img onImageUpload={url => this.onImageUpload(url)}/>
-                                    <TouchableOpacity onPress={() => this.allowTakePicture()}><Text>Take a picture</Text></TouchableOpacity>
-                                </>
+                                    <>
+                                        <Img onImageUpload={url => this.onImageUpload(url)}/>
+                                        <TouchableOpacity style={styles.takePict} onPress={() => this.allowTakePicture()}><Text style={styles.takePictText}>Take a picture</Text></TouchableOpacity>
+                                    </>
                                 :
-                                    <MyCamera onImageUpload={(url => this.onImageUpload(url))}/>
+                                    <>
+                                        <View style={styles.camera}>
+                                            <MyCamera forRegister={true} onImageUpload={(url => this.onImageUpload(url))}/>
+                                        </View>
+                                    </>
                             }
                         </View>
                     </View>
@@ -246,8 +252,8 @@ const styles = StyleSheet.create({
         margin: 5
     },
     avatar: {
-        width: 50,
-        height: 50,
+        width: 150,
+        height: 150,
         borderRadius: 400,
         backgroundColor: 'gray',
         marginBottom: 5
@@ -258,12 +264,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#5c0931',
         borderRadius: 3
     },
+    camera: {
+        flex: 3,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     cam:{
         width: 50,
         height: 50,
         borderRadius: 400,
         backgroundColor: 'gray',
         marginBottom: 5
+    },
+    takePict: {
+        backgroundColor: '#5c0931',
+        padding: 10,
+        color: 'white',
+        borderRadius: 10,
+        marginBottom: 20
+    },
+    takePictText: {
+        color: 'whitesmoke'
     },
     error: {
         color: 'red'

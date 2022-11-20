@@ -3,7 +3,6 @@ import Img from '../components/Img';
 import React, { Component } from 'react';
 import { Text, TextInput, TouchableOpacity, StyleSheet, Image, View } from 'react-native';
 import { db, auth } from '../firebase/Config'
-import { AntDesign } from '@expo/vector-icons';
 
 class NewPost extends Component {
   constructor(props){
@@ -41,19 +40,28 @@ class NewPost extends Component {
     .catch (err => console.log(err))
   }
 
+  retake(){
+    this.setState({
+      compCamara: true
+    })
+  }
+
   render() {
     return (
-      <>
-      {
         this.state.compCamara ?
-            <>
+            <View style={styles.container1}>
               <MyCamera onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
-              <Img onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.camera}/>
-            </> 
+              <Img onImageUpload={(url)=>this.onImageUpload(url)} stlye={styles.imgComp}/>
+            </View> 
           : 
-            <View style={styles.container}>
-              <Text style={styles.textEnc}>Estas por subir tu posteo!</Text>
-              <Image style={styles.imagen} source={{uri: this.state.urlFoto}}/>
+            <View style={styles.container2}>
+              <Text style={styles.textEnc}>Last step!</Text>
+              <View style={styles.imageCont}>
+                <Image style={styles.imagen} source={{uri: this.state.urlFoto}}/>
+                <TouchableOpacity style={styles.retake} onPress={() => this.retake()}>
+                  <Text style={styles.textRetake}>Retake</Text>
+                </TouchableOpacity>
+              </View>
               <TextInput
               style={styles.form}
               keyboardType='default'
@@ -61,47 +69,77 @@ class NewPost extends Component {
               onChangeText={ text => this.setState({posteo:text}) }
               value={this.state.posteo} />
               <TouchableOpacity style={styles.text} onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
-                <Text style={styles.text}>Subir a FNATIC</Text>
+                <Text style={styles.text}>Send to FNATIC</Text>
               </TouchableOpacity>
             </View>
-      }
-    </>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    width: '50%',
-    height: '50%',
+  container1: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    margin: 'auto'
-},
-  form:{
-    border: '2px solid #5c0931',
-    marginBottom: '7px',
-    padding: '5px',
-    width: '408.800px'
-},
+    width: '100%'
+  }, 
+  camera: {
+    flex: 1
+  },
+  imgComp: {
+    flex: 1,
+    backgroundColor: '#5c0931',
+    paddingBottom: 20
+  },
   imagen:{
-    height: '406.800px',
-    width: '406.800px',
-    marginBottom: '20px',
-    marginTop: '20px' 
- },
- text:{
-  fontSize: '20px',
-  color: 'whitesmoke',
-  backgroundColor: '#5c0931',
-  fontWeight: 'bold',
-  padding: '5px'
-},
-textEnc:{
-  fontSize: '20px',
-  marginTop: '20px'
-}
+    height: '90%',
+    width: '100%',
+    position: 'relative'
+  },
+  text:{
+    fontSize: 20,
+    color: 'whitesmoke',
+    backgroundColor: '#5c0931',
+    fontWeight: 'bold',
+    padding: 5,
+    borderRadius: 10
+  },
+  container2:{
+    flex: 1,
+    width: '100vw',
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'space-evenly'
+  },
+  form:{
+    width: '90%',
+    border: '2px solid #5c0931',
+    padding: 5,
+  },
+  imageCont: {
+    widh: '100%',
+    height: '50vh',
+    justifyContent: 'center',
+    alignContent: 'center'
+  },
+  textEnc:{
+    width: '100%',
+    padding: 30,
+    fontSize: 20,
+    textShadowRadius: 10,
+    backgroundColor: '#5c0931',
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  retake: {
+    color: 'whitesmoke',
+    backgroundColor: '#5c0931',
+    padding: 10,
+    borderRadius: 3,
+    marginTop: 5
+  },
+  textRetake: {
+    color: 'whitesmoke'
+  }
 })
 
 export default NewPost

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, Image} from 'react-native';
+import { TouchableOpacity, View, Text, Image, StyleSheet} from 'react-native';
 import { storage } from '../firebase/Config';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -31,25 +31,42 @@ class Img extends Component {
 
     render(){
         return (
-            <View >
-                <View >
-                    <TouchableOpacity onPress={() => this.pickImage()}>
-                        <Text> Choose a picture </Text> 
-                    </TouchableOpacity>
-                    {
-                        this.state.imageEmpty !== true ?
-                            <TouchableOpacity onPress={() => this.removeImage()}>
-                                <Text> Delete </Text> 
-                            </TouchableOpacity>
-                        :
-                            false
-                    }
-                </View> 
-            </View>
+            <View>
+                <TouchableOpacity style={styles.choose} onPress={() => this.pickImage()}>
+                    <Text style={styles.text}> Choose a picture </Text> 
+                </TouchableOpacity>
+                {
+                    this.state.imageEmpty !== true ?
+                        <TouchableOpacity style={styles.choose} onPress={() => this.removeImage()}>
+                            <Text style={styles.text}> Delete </Text> 
+                        </TouchableOpacity>
+                    :
+                        false
+                }
+            </View> 
         );
       }
 
-    }
+}
 
+const styles = StyleSheet.create({
+    choose: {
+        backgroundColor: '#5c0931',
+        padding: 10,
+        color: 'white',
+        borderRadius: 10,
+        marginBottom: 20
+    },
+    text: {
+        color: 'white'
+    },
+    delete: {
+        backgroundColor: '#5c0931',
+        padding: 10,
+        color: 'white',
+        borderRadius: 10,
+        marginBottom: 20
+    }
+})
 
 export default Img; 

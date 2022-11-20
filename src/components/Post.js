@@ -5,7 +5,6 @@ import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import { CurrentRenderContext } from '@react-navigation/native'
 
 class Post extends Component {
     constructor(props) {
@@ -123,7 +122,7 @@ class Post extends Component {
         <View style={styles.container}>
             <View style={styles.usercruz}>
                 <TouchableOpacity style={styles.userNameBox} onPress={()=> this.userProfile()}>
-                    <Image style={styles.profileImg} source={{uri: this.state.userInfo[0]?.data.photo}}/>
+                    <Image style={styles.profileImg} source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.png')}/>
                     <Text style={styles.userName}>{this.state.userInfo[0]?.data.userName}</Text>
                 </TouchableOpacity> 
                 {

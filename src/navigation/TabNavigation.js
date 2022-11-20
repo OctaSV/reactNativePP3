@@ -24,7 +24,7 @@ function TabNavigation() {
                 name="Profile"
                 component={Profile}
                 options={{ 
-                        tabBarIcon: () => <FontAwesome name="user" size={24}                color="black" />,
+                        tabBarIcon: () => <FontAwesome name="user" size={24} color="black" />,
                         headerShown: false 
                     }}/>
             <Tab.Screen

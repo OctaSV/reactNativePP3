@@ -44,7 +44,7 @@ class Search extends Component {
                 })
             }
         }
-    
+    }
 
     render() {
 
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
         color: 'white',
         padding: 15,
         margin: 15
-
     },
     button: {
         fontSize: 20,

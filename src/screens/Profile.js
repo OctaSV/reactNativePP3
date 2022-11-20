@@ -19,36 +19,9 @@ class Profile extends Component {
     }
   }
 
-  getUserData() {
-    let user = ''
-    if (this.props.route.params?.user) {
-      user = this.props.route.params.user
-    } else {
-      user = auth.currentUser.email
-    }
-    //notar que si el mail esta mal escrito, te lo completa ejemplo nanci@gmail.con te devuelve nanci@gmail.com. Ademas si el mail es
-    //USUARIOREAL@gmail.com te devuelve usuarioreal@gmail.com 
-    db.collection("users").where("email", '==', user).onSnapshot((docs) => {
-      let userInfo = [];
-      console.log(docs);
-      docs.forEach((doc) => {
-        userInfo.push({
-          data: doc.data()
-        })
-      });
-      this.setState({
-        userInfo: userInfo,
-        loader: false,
-        userEmail: user
-      });
-      this.getUserPosts(user)
-    });
-
-  }
-
   getUserPosts(user) {
     console.log(user);
-    db.collection("posts").where("owner", '==', user).onSnapshot((docs) => {
+    db.collection("posts").where("owner", '==', user).orderBy('createdAt', 'desc').onSnapshot((docs) => {
       let userPosts = [];
       docs.forEach((doc) => {
         userPosts.push({
@@ -63,14 +36,41 @@ class Profile extends Component {
     });
   }
 
+  getUserData() {
+    let user = ''
+    if (this.props.route.params) {
+      user = this.props.route.params.user
+    } else {
+      user = auth.currentUser.email
+    }
+    //notar que si el mail esta mal escrito, te lo completa ejemplo nanci@gmail.con te devuelve nanci@gmail.com. Ademas si el mail es
+    //USUARIOREAL@gmail.com te devuelve usuarioreal@gmail.com 
+    db.collection("users").where("email", '==', user)
+    .onSnapshot((docs) => {
+      let userInfo = [];
+      console.log(docs);
+      docs.forEach((doc) => {
+        userInfo.push({
+          data: doc.data()
+        })
+      });
+      this.setState({
+        userInfo: userInfo,
+        userEmail: user,
+        loader: false
+      });
+      this.getUserPosts(user)
+    });
+
+  }
+
   logOut() {
     auth.signOut()
     this.props.navigation.navigate('Login')
   }
 
-
   deleteAcc() {
-    const credential = auth.signInWithEmailAndPassword(email, password)
+    const credential = auth.signInWithEmailAndPassword(auth.currentUser.email, password)
     auth.currentUser.reauthenticateWithCredential(credential).then(() => {
       console.log(credential)
     }).then(() => {
@@ -105,7 +105,7 @@ class Profile extends Component {
                   :
                     false
                   }   
-                  <Image source={this.state.userInfo[0]?.data.photo} style={styles.imagen} />
+                  <Image source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.png')} style={styles.imagen} />
                   <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
                   <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
                 </View>
