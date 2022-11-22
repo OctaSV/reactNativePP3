@@ -56,16 +56,16 @@ class NewPost extends Component {
           : 
             <View style={styles.container2}>
               <Text style={styles.textEnc}>Last step!</Text>
-              <View style={styles.imageCont}>
+              <View>
                 <Image style={styles.imagen} source={{uri: this.state.urlFoto}}/>
                 <TouchableOpacity style={styles.retake} onPress={() => this.retake()}>
-                  <Text style={styles.textRetake}>Retake</Text>
+                  <Text style={styles.textRetake}>Change</Text>
                 </TouchableOpacity>
               </View>
               <TextInput
               style={styles.form}
               keyboardType='default'
-              placeholder='Descripcion de tu posteo'
+              placeholder='Post description'
               onChangeText={ text => this.setState({posteo:text}) }
               value={this.state.posteo} />
               <TouchableOpacity style={styles.text} onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20
   },
   imagen:{
-    height: '90%',
-    width: '100%',
+    height: 450,
+    width: 450,
     position: 'relative'
   },
   text:{
@@ -114,12 +114,6 @@ const styles = StyleSheet.create({
     width: '90%',
     border: '2px solid #5c0931',
     padding: 5,
-  },
-  imageCont: {
-    widh: '100%',
-    height: '50vh',
-    justifyContent: 'center',
-    alignContent: 'center'
   },
   textEnc:{
     width: '100%',

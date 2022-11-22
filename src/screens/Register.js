@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native'
-import {auth, db} from '../firebase/Config'
+import {auth, db, storage} from '../firebase/Config'
 import MyCamera from '../components/MyCamera';
 import Img from '../components/Img';
 
@@ -30,33 +30,34 @@ class Register extends Component{
         })
     }
 
-    savePhoto() {
-        fetch(this.state.urlAvatarNoBlob) // me permite acceder el contenido de un archivo
-            .then(res => res.blob()) // el metodo blob me permite tener la representacion binaria de mi imagen         
-            .then(image => {
-                const ref = storage.ref(`avatars/${Date.now()}.jpg`)
-                ref.put(image) // subo a firebase el archivo
-                    .then(() => {
-                        ref.getDownloadURL()
-                            .then(url => {
-                                this.setState({
-                                    urlAvatar: url
-                                })
-                            })
-                            .catch(e => console.log(e))
-                    })
-                    .catch(e => console.log(e))
-            })
-            .catch(e => console.log(e))
-    }
-
     allowTakePicture(){
         this.setState({
             useCam: true
         })
     }
 
-    signUp(email, password, userName, biography, avatarUrl){
+    savePhoto() {
+        fetch(this.state.urlAvatarNoBlob) // me permite acceder el contenido de un archivo
+            .then(res => res.blob()) // el metodo blob me permite tener la representacion binaria de mi imagen         
+            .then(image => {
+                const ref = storage.ref(`avatars/${Date.now()}.jpg`)
+                console.log(image)
+                ref.put(image) // subo a firebase el archivo
+                .then(() => {
+                    ref.getDownloadURL()
+                        .then(url => {
+                            this.setState({
+                                urlAvatar: url
+                            })
+                        })
+                        .catch(e => console.log(e))
+                })
+                .catch(e => console.log(e))
+            })
+            .catch(e => console.log(e))
+    }
+
+    signUp(email, password, userName, biography){
         auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
             this.savePhoto()
@@ -65,7 +66,7 @@ class Register extends Component{
                 password: password,
                 userName: userName,
                 biography: biography, 
-                photo: avatarUrl,
+                photo: this.state.urlAvatar,
                 createdAt: Date.now()
             }) 
         })
@@ -118,14 +119,8 @@ class Register extends Component{
                 <View style={styles.box}>
                     <View style={styles.titleBox}><Text style={styles.title}>FNTIC</Text></View>
                     <View style={styles.containerInfo}>
-                        <View style={styles.formContainer}>
-                            <TextInput style={this.state.emailIncomplete !== true ? styles.field : styles.incompletedField} keyboardType='email-address' placeholder='Email' onChangeText={text => (this.setState({email: text}),  this.emailIncomplete(text))} value={this.state.email}/>
-                            <TextInput style={this.state.passwordIncomplete !== true ? styles.field : styles.incompletedField} keyboardType='default' placeholder='Password' secureTextEntry={true} onChangeText={text => (this.setState({password: text}), this.passwordIncomplete(text))} value={this.state.password}/>
-                            <TextInput style={this.state.userNameIncomplete !== true ? styles.field : styles.incompletedField} keyboardType='default' placeholder='Username' onChangeText={text => (this.setState({userName: text}), this.userNameIncomplete(text))} value={this.state.userName}/>
-                            <TextInput style={styles.field} keyboardType='default' placeholder='Biography' onChangeText={text => this.setState({biography: text})} value={this.state.biography}/>
-                        </View>
                         <View style={styles.avatarBox}>
-                            <Image style={styles.avatar} source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.png') : {uri: this.state.urlAvatarNoBlob}}/>
+                            <Image style={styles.avatar} source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.jpg') : {uri: this.state.urlAvatarNoBlob}}/>
                             {
                                 this.state.useCam === false ?
                                     <>
@@ -134,11 +129,15 @@ class Register extends Component{
                                     </>
                                 :
                                     <>
-                                        <View style={styles.camera}>
                                             <MyCamera forRegister={true} onImageUpload={(url => this.onImageUpload(url))}/>
-                                        </View>
                                     </>
                             }
+                        </View>
+                        <View style={styles.formContainer}>
+                            <TextInput style={this.state.emailIncomplete !== true ? styles.field : styles.incompletedField} keyboardType='email-address' placeholder='Email' onChangeText={text => (this.setState({email: text}),  this.emailIncomplete(text))} value={this.state.email}/>
+                            <TextInput style={this.state.passwordIncomplete !== true ? styles.field : styles.incompletedField} keyboardType='default' placeholder='Password' secureTextEntry={true} onChangeText={text => (this.setState({password: text}), this.passwordIncomplete(text))} value={this.state.password}/>
+                            <TextInput style={this.state.userNameIncomplete !== true ? styles.field : styles.incompletedField} keyboardType='default' placeholder='Username' onChangeText={text => (this.setState({userName: text}), this.userNameIncomplete(text))} value={this.state.userName}/>
+                            <TextInput style={styles.field} keyboardType='default' placeholder='Biography' onChangeText={text => this.setState({biography: text})} value={this.state.biography}/>
                         </View>
                     </View>
                     <View style={styles.submits}>
@@ -152,7 +151,7 @@ class Register extends Component{
                                 </View>
                             :
                                 <View style={styles.submits}> 
-                                    <TouchableOpacity style={styles.submitBox} onPress={() => (this.savePhoto(), this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, this.state.urlAvatar))}>
+                                    <TouchableOpacity style={styles.submitBox} onPress={() => this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, this.state.urlAvatar)}>
                                         <Text> Submit </Text>
                                     </TouchableOpacity>
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
         color: '#5c0931'
     },
     containerInfo: {
-        flex: 3,
+        flex: 6,
         width: '100%',
         flexWrap: 'wrap',
         alignItems: 'center',
@@ -235,13 +234,14 @@ const styles = StyleSheet.create({
         borderRadius: 3
     },
     formContainer: {
-        flex: 2,
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'space-around',
     },
     avatarBox: {
         flex: 3,
         alignItems: 'center',
+        flexWrap: 'wrap',
         justifyContent: 'center'
     },
     addAvatar: {

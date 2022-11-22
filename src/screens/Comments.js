@@ -51,79 +51,82 @@ class Comments extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.box}>
 
-        <TouchableOpacity onPress={() => this.volver()}>
-          <AntDesign name="arrowleft" size={24} color="#5c0931" />
-        </TouchableOpacity>
+            <TouchableOpacity stlye={styles.arrow} onPress={() => this.volver()}>
+              <AntDesign name="arrowleft" size={24} color="#5c0931" />
+            </TouchableOpacity>
 
-      {this.state.commentCount == 0 
-      ? <Text>Aún no hay comentarios</Text> 
-      : <>
-          <Text style={styles.text}>
-            {this.state.commentCount} comentarios
-          </Text>
+          {this.state.commentCount == 0 
+          ? <Text>No comments yet</Text> 
+          : <>
+              <Text style={styles.text}>
+                {this.state.commentCount} Comments
+              </Text>
 
-          <FlatList
-                data={this.state.comentarios}
-                keyExtractor={( item ) => item.createdAt.toString()}
-                renderItem={({item}) => <Text>Comentario de {item.owner}: {item.description}</Text>} /> 
-        </>
-      }
-      <View style={styles.containerComm}>
-      <TextInput
-          style={styles.form}
-          keyboardType='default'
-          placeholder='Tu comentario!'
-          onChangeText={ text => this.setState({comment:text}) }
-          value={this.state.comment} />
+              <FlatList
+                    data={this.state.comentarios}
+                    keyExtractor={( item ) => item.createdAt.toString()}
+                    renderItem={({item}) => <Text>{item.owner}: {item.description}</Text>} /> 
+            </>
+          }
+          <View style={styles.containerComm}>
+              <TextInput
+                style={styles.form}
+                keyboardType='default'
+                placeholder='Your comment!'
+                onChangeText={ text => this.setState({comment:text}) }
+                value={this.state.comment} />
+              <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+                <Text style={styles.textButton}>
+                  Up Load
+                </Text>
+              </TouchableOpacity>
+          </View>
+            
 
-        <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
-          <Text style={styles.textButton}>
-            Publicar
-          </Text>
-        </TouchableOpacity>
-      </View>
-        
-
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container:{
-    marginBottom: '20px',
-    marginTop: '20px',
-    alignItems: 'center',
+  container: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  box:{
+    textAlign: 'center',
     border: '1px solid #5c0931',
     width: '80%',
-    margin: 'auto',
     backgroundColor: 'white'
-},
-form:{
-  border: '2px solid #5c0931',
-  padding: '10px',
-  width: '70%'
-},
-text:{
-  fontSize: '20px',
-  textAlign: 'center'
-},
-textButton:{
-  fontSize: '12px',
-  color: 'whitesmoke',
-  backgroundColor: '#5c0931',
-  fontWeight: 'bold',
-  width: '100%',
-  padding: '1px'
-},
-containerComm:{
-  flex: 1,
-  flexDirection: 'row',
-  width: '400px',
-  margin: '7px',
-  justifyContent: 'center'
-}
+  },
+  form:{
+    width: '90%',
+    border: '1px solid #5c0931',
+  },
+  text:{
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 10
+  },
+  textButton:{
+    fontSize: 12,
+    color: 'whitesmoke',
+    backgroundColor: '#5c0931',
+    fontWeight: 'bold',
+    width: '100%',
+    padding: 3
+  },
+  containerComm:{
+    textAlign: 'center',
+    flexDirection: 'row',
+    width: '95%',
+    justifyContent: 'center',
+    marginVertical: 5,
+    marginLeft: 8
+  }
 })
 
 export default Comments

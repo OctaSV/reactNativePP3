@@ -105,7 +105,7 @@ class Profile extends Component {
                   :
                     false
                   }   
-                  <Image source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.png')} style={styles.imagen} />
+                  <Image source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.jpg')} style={styles.imagen} />
                   <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
                   <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
                 </View>

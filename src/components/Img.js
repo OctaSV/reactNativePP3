@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet} from 'react-native';
-import { storage } from '../firebase/Config';
+import { TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 class Img extends Component {

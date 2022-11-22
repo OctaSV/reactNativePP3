@@ -94,22 +94,26 @@ class Post extends Component {
     }
 
     comment(comentario){
-        const commentAGuardar ={
-          owner: auth.currentUser.email,
-          createdAt: Date.now(),
-          description: comentario
-      }
-  
-          db.collection('posts').doc(this.props.id).update({
-              comments: firebase.firestore.FieldValue.arrayUnion(commentAGuardar)
-          })
-          .then(() => {
-              this.setState({
-                  comment: '',
-                  commentsCount: this.state.commentsCount + 1
-              });
-          })
-          .catch(err => console.log(err))
+        if (comentario !== ''){
+            const commentAGuardar ={
+              owner: auth.currentUser.email,
+              createdAt: Date.now(),
+              description: comentario
+            }
+      
+              db.collection('posts').doc(this.props.id).update({
+                comments: firebase.firestore.FieldValue.arrayUnion(commentAGuardar)
+              })
+              .then(() => {
+                  this.setState({
+                      comment: '',
+                      commentsCount: this.state.commentsCount + 1
+                  });
+              })
+              .catch(err => console.log(err))
+        } else{ 
+            false
+        }
     }
 
     navegarComment(){
@@ -122,7 +126,7 @@ class Post extends Component {
         <View style={styles.container}>
             <View style={styles.usercruz}>
                 <TouchableOpacity style={styles.userNameBox} onPress={()=> this.userProfile()}>
-                    <Image style={styles.profileImg} source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.png')}/>
+                    <Image style={styles.profileImg} source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.jpg')}/>
                     <Text style={styles.userName}>{this.state.userInfo[0]?.data.userName}</Text>
                 </TouchableOpacity> 
                 {

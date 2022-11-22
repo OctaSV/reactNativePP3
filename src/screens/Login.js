@@ -69,18 +69,22 @@ class Login extends Component{
                                     <Text style={styles.title2}>FNATIC</Text>
                                 </View>
                                 <View style={styles.box2}>
-                                    <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
-                                    <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
-                                    <TouchableOpacity onPress={() => this.signIn(this.state.email, this.state.password)} >
-                                        <Text style={styles.submit}> Submit </Text>
-                                    </TouchableOpacity>
-                                    <Text>{this.state.errorMessage}</Text>
-                                    <TouchableOpacity onPress={() => this.signGoogle()}>                            
-                                        <Text>Google</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>                            
-                                        <Text>You are not in yet?</Text>
-                                    </TouchableOpacity>
+                                    <View style={styles.boxLog}>
+                                        <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
+                                        <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
+                                        <TouchableOpacity onPress={() => this.signIn(this.state.email, this.state.password)} >
+                                            <Text style={styles.submit}> Submit </Text>
+                                        </TouchableOpacity>
+                                        <Text>{this.state.errorMessage}</Text>
+                                    </View>
+                                    <View style={styles.boxSubmit}>
+                                        <TouchableOpacity style={styles.google} onPress={() => this.signGoogle()}>                            
+                                            <Text>Google</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>                            
+                                            <Text>You are not in yet?</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
                         </View>
@@ -107,7 +111,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     box: {
-        flex: 2,
+        flex: 3,
         backgroundColor: 'white',
         padding: 10,
         borderRadius: 5,
@@ -128,6 +132,11 @@ const styles = StyleSheet.create({
         fontWeight: 350,
         color: '#5c0931'
     },
+    boxLog: {
+        flex: 4,
+        justifyContent: 'space-around',
+        textAlign: 'center'
+    },  
     field: {
         borderWidth: 1,
         borderColor: '#CCCCCC',
@@ -135,6 +144,12 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         paddingLeft: 10,
         shadowOpacity: 20
+    },
+    boxSubmit: {
+        flex: 1,
+        justifyContent: 'space-evenly',
+        alignContent: 'center',
+        textAlign: 'center'
     },
     submit: {
         padding: 10,
