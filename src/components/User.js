@@ -1,6 +1,5 @@
-import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, TextInput } from 'react-native'
-import React, { Component } from 'react'
-
+import React, { Component } from 'react';
+import { Text, View, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
 class User extends Component {
     constructor(props) {
@@ -11,7 +10,6 @@ class User extends Component {
     user() {
         this.props.navigation.navigate('Go Back', {user: this.props.user.email})
     }
-
    
     render() {
         return (
@@ -40,5 +38,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
       }
   
-})
-export default User
+});
+
+export default User;

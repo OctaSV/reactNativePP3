@@ -1,8 +1,8 @@
-import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
-import React, { Component } from 'react'
-import { auth, db } from '../firebase/Config'
-import firebase from 'firebase'
+import React, { Component } from 'react';
+import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { auth, db } from '../firebase/Config';
 import { AntDesign } from '@expo/vector-icons';
+import firebase from 'firebase';
 
 class Comments extends Component {
     constructor(props){
@@ -43,22 +43,21 @@ class Comments extends Component {
         .catch(err => console.log(err))
     }
 
-    volver(){
-      this.props.route.params.setCommentsCount(this.state.commentCount);
-      this.props.navigation.navigate('Home')
-    }
+  goBack(){
+    this.props.route.params.setCommentsCount(this.state.commentCount);
+    this.props.navigation.navigate('Home')
+  }
 
   render() {
+    console.log(this.state.comentarios)
     return (
       <View style={styles.container}>
         <View style={styles.box}>
-
-            <TouchableOpacity onPress={() => this.volver()}>
-              <AntDesign name="arrowleft" size={36} color="#5c0931" />
+            <TouchableOpacity stlye={styles.arrow} onPress={() => this.goBack()}>
+              <AntDesign name="arrowleft" size={24} color="#5c0931" />
             </TouchableOpacity>
-
-          {this.state.commentCount == 0 
-          ? <Text>No comments yet</Text> 
+          {this.state.commentCount == 0 ? 
+            <Text>No comments yet</Text> 
           : <>
               <Text style={styles.text}>
                 {this.state.commentCount} Comments

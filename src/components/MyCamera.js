@@ -1,11 +1,8 @@
-import React, {Component} from 'react'
-import {Camera} from 'expo-camera'
-import {View, StyleSheet, Text, TouchableOpacity, Image, ActivityIndicator} from 'react-native'
-import {storage} from '../firebase/Config'
+import React, { Component } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Camera } from 'expo-camera';
+import { storage } from '../firebase/Config';
 import { Ionicons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-
 
 class MyCamera extends Component {
     constructor(props){
@@ -31,8 +28,7 @@ class MyCamera extends Component {
         this.metodosDeCamara.takePictureAsync()
         .then(image => {
             this.setState({
-                urlFoto: image.uri,
-                mostrarCamara: false
+                urlFoto: image.uri
             })
             this.props.onImageUpload(image.uri)
         })
@@ -69,53 +65,34 @@ class MyCamera extends Component {
             <React.Fragment>
                 {this.state.permission ?
                     !this.props.forRegister ?
-                            this.state.mostrarCamara === false ?
-                                <View style={styles.container}>
-                                    <Image
-                                    style={styles.imagen}
-                                    source={{uri: this.state.urlFoto}}
-                                    />
-                                    <View style={styles.containerEl}>
-                                        <TouchableOpacity onPress={()=> this.discardPostPicture()}>
-                                            <Entypo name="cross" size={48} color="#5c0931" />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={()=> this.savePostPicture()}>
-                                            <FontAwesome5 name="arrow-alt-circle-right" size={48} color="#5c0931" />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            : 
-                                <View style={styles.container}>
-                                    <Text style={styles.text}>Take a picture for fanatics</Text>
-                                    <Camera
-                                    style={styles.camara}
-                                    type={Camera.Constants.Type.back}
-                                    ref={ (metodos) => this.metodosDeCamara = metodos}
-                                    />
-                                    <View style={styles.buttons}>
-                                        <TouchableOpacity onPress={()=> this.takePicture()}>
-                                            <Ionicons name="radio-button-on-outline" size={48} color="#5c0931" />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                    :
-                        this.state.mostrarCamara === false ?
-                            false
-                        :
-                            <View style={styles.container}>
-                                <Camera
-                                style={styles.camara}
-                                type={Camera.Constants.Type.back}
-                                ref={ (metodos) => this.metodosDeCamara = metodos}
-                                />
-                                <View style={styles.buttons}>
-                                    <TouchableOpacity onPress={()=> this.takePicture()}>
-                                        <Ionicons name="radio-button-on-outline" size={48} color="#5c0931" />
-                                    </TouchableOpacity>
-                                </View>
+                        <View style={styles.container}>
+                            <Text style={styles.text}>Take a picture for fanatics</Text>
+                            <Camera
+                            style={styles.camara}
+                            type={Camera.Constants.Type.back}
+                            ref={ (metodos) => this.metodosDeCamara = metodos}
+                            />
+                            <View style={styles.buttons}>
+                                <TouchableOpacity onPress={()=> this.takePicture()}>
+                                    <Ionicons name="radio-button-on-outline" size={48} color="#5c0931" />
+                                </TouchableOpacity>
                             </View>
+                        </View>
+                    :
+                        <View style={styles.container}>
+                            <Camera
+                            style={styles.camara}
+                            type={Camera.Constants.Type.back}
+                            ref={ (metodos) => this.metodosDeCamara = metodos}
+                            />
+                            <View style={styles.buttons}>
+                                <TouchableOpacity onPress={()=> this.takePicture()}>
+                                    <Ionicons name="radio-button-on-outline" size={48} color="#5c0931" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                 :
-                        <ActivityIndicator style={styles.activity} size='large' color='#5c0931'/>
+                    <ActivityIndicator style={styles.activity} size='large' color='#5c0931'/>
                 }
             </React.Fragment>
         )
@@ -157,6 +134,6 @@ const styles = StyleSheet.create({
      activity: {
         marginTop: 250
      }
-})
+});
 
-export default MyCamera
+export default MyCamera;

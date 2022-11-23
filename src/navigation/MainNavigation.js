@@ -2,11 +2,10 @@ import Login from '../screens/Login';
 import Register from '../screens/Register';
 import TabNavigation from './TabNavigation';
 import Comments from '../screens/Comments';
-import Search from '../screens/Search';
+import Profile from '../screens/Profile';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Profile from '../screens/Profile';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +21,6 @@ function MainNavigation() {
         </Stack.Navigator>
       </NavigationContainer>
     )
-}
+};
 
 export default MainNavigation;

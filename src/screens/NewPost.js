@@ -1,8 +1,8 @@
-import MyCamera from '../components/MyCamera';
-import Img from '../components/Img';
 import React, { Component } from 'react';
 import { Text, TextInput, TouchableOpacity, StyleSheet, Image, View } from 'react-native';
 import { db, auth } from '../firebase/Config'
+import MyCamera from '../components/MyCamera';
+import Img from '../components/Img';
 
 class NewPost extends Component {
   constructor(props){
