@@ -5,6 +5,7 @@ import Post from '../components/Post';
 import { FontAwesome } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import firebase from 'firebase';
 
 class Profile extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class Profile extends Component {
       loader: true,
       userEmail: '',
       password: '',
-      email: ''
+      show: false,
+      error: false
     }
   }
 
@@ -46,21 +48,21 @@ class Profile extends Component {
     //notar que si el mail esta mal escrito, te lo completa ejemplo nanci@gmail.con te devuelve nanci@gmail.com. Ademas si el mail es
     //USUARIOREAL@gmail.com te devuelve usuarioreal@gmail.com 
     db.collection("users").where("email", '==', user)
-    .onSnapshot((docs) => {
-      let userInfo = [];
-      console.log(docs);
-      docs.forEach((doc) => {
-        userInfo.push({
-          data: doc.data()
-        })
+      .onSnapshot((docs) => {
+        let userInfo = [];
+        console.log(docs);
+        docs.forEach((doc) => {
+          userInfo.push({
+            data: doc.data()
+          })
+        });
+        this.setState({
+          userInfo: userInfo,
+          userEmail: user,
+          loader: false
+        });
+        this.getUserPosts(user)
       });
-      this.setState({
-        userInfo: userInfo,
-        userEmail: user,
-        loader: false
-      });
-      this.getUserPosts(user)
-    });
 
   }
 
@@ -70,17 +72,25 @@ class Profile extends Component {
   }
 
   deleteAcc() {
-    const credential = auth.signInWithEmailAndPassword(auth.currentUser.email, password)
+    const email = auth.currentUser.email
+     const password = this.state.password
+    
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      email,
+      password);
+    
     auth.currentUser.reauthenticateWithCredential(credential).then(() => {
       console.log(credential)
     }).then(() => {
-      auth.currentUser.delete().then(() => {
-        this.props.navigation.navigate('Login')
-      })
+       auth.currentUser.delete().then(() => {
+         this.props.navigation.navigate('Login')
+        })
     })
-    .catch((error) => {
-     console.log(error)
-    });
+      .catch((error) => {
+        this.setState({
+          error: true
+        })
+      });
   }
 
   componentDidMount() {
@@ -89,37 +99,55 @@ class Profile extends Component {
 
 
   render() {
+    
     return (
       <React.Fragment>
         {
           this.state.loader ?
             <ActivityIndicator styles={styles.activity} size='large' color='black' />
             :
-              <View style={styles.container}>
-                <View style={styles.pageTitle}>
-                  {this.state.userEmail === auth.currentUser.email ?
-                    <View style={styles.comandosOwner}>
-                      <TouchableOpacity style={styles.comandosOwner.margen} onPress={() => this.deleteAcc()}> <Entypo name="trash" size={30} color="white" /></TouchableOpacity>
-                      <TouchableOpacity onPress={() => this.logOut()}> <FontAwesome name="sign-out" size={30} color="white" /> </TouchableOpacity>
-                    </View>
+            <View style={styles.container}>
+              <View style={styles.pageTitle}>
+                {this.state.userEmail === auth.currentUser.email ?
+                  <View style={styles.comandosOwner}>
+                    <TouchableOpacity style={styles.comandosOwner.margen} onPress={() => this.setState({ show: true })}> <Entypo name="trash" size={30} color="white" /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.logOut()}> <FontAwesome name="sign-out" size={30} color="white" /> </TouchableOpacity>
+                  </View>
                   :
-                    false
-                  }   
-                  <Image source={this.state.userInfo[0]?.data.photo ? {uri: this.state.userInfo[0]?.data.photo} : require('../../assets/logo.jpg')} style={styles.imagen} />
-                  <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
-                  <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
-                </View>
-                <FlatList
-                  //solucionar error virtualized list 
-                  data={this.state.userPosts}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => <Post
-                    navigation={this.props.navigation}
-                    id={item.id}
-                    data={item.data}
-                    url={item.url} />
-                  } />
-              </View> 
+                  false
+                }
+                {this.state.show === true ?
+                  <View style={styles.comandosOwner}>
+                    <TouchableOpacity style={styles.comandosOwner.margen} onPress={() => this.setState({ show: true })}> <Entypo name="trash" size={30} color="white" /></TouchableOpacity>
+                    <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={text => this.setState({ password: text })} />
+                    <TouchableOpacity onPress={() => this.deleteAcc()} >
+                      <Text style={styles.submit}> Borrar </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.logOut()}> <FontAwesome name="sign-out" size={30} color="white" /> </TouchableOpacity>
+                  </View>
+                  : false
+                }
+                {this.state.error === true ?
+                    
+                    <Text style={styles.error}>Contrasena incorrecta!</Text>
+          
+                  : false
+                }
+                <Image source={this.state.userInfo[0]?.data.photo ? { uri: this.state.userInfo[0]?.data.photo } : require('../../assets/logo.jpg')} style={styles.imagen} />
+                <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
+                <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
+              </View>
+              <FlatList
+                //solucionar error virtualized list 
+                data={this.state.userPosts}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <Post
+                  navigation={this.props.navigation}
+                  id={item.id}
+                  data={item.data}
+                  url={item.url} />
+                } />
+            </View>
         }
       </React.Fragment>
     )
@@ -132,13 +160,14 @@ const styles = StyleSheet.create({
     fontSize: 40,
     padding: 15,
     backgroundColor: '#5c0931',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   imagen: {
     height: 100,
     width: 100,
     borderRadius: 10,
-    borderColor: 'white'
+    borderColor: 'white',
+    marginTop: 50
   },
   texto: {
     fontWeight: 'bold',
@@ -160,11 +189,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-end',
     position: 'absolute',
+
     margen:
     {
-      marginRight: 10
+      marginRight: 10,
     }
-  }
+  },
+  field: {
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    color: '#535353',
+    borderRadius: 2,
+    paddingLeft: 10,
+    shadowOpacity: 20,
+  },
+  submit: {
+    padding: 10,
+    color: 'white',
+    backgroundColor: 'red',
+    borderRadius: 10,
+    marginRight: 10,
+    marginLeft: 6
+},
+error: {
+  marginTop: 50
+}
 })
 
 export default Profile;
