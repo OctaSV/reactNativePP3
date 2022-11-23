@@ -2,10 +2,9 @@ import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import NewPost from '../screens/NewPost';
 import Search from '../screens/Search';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons';
-import { auth } from '../firebase/Config'
-import { Component } from 'react';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +42,6 @@ function TabNavigation() {
                     }}/>
         </Tab.Navigator>
     )
+};
 
-}
-
-export default TabNavigation
+export default TabNavigation;

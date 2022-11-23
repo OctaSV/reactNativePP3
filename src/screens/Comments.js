@@ -1,8 +1,8 @@
-import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
-import React, { Component } from 'react'
-import { auth, db } from '../firebase/Config'
-import firebase from 'firebase'
+import React, { Component } from 'react';
+import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { auth, db } from '../firebase/Config';
 import { AntDesign } from '@expo/vector-icons';
+import firebase from 'firebase';
 
 class Comments extends Component {
   constructor(props) {
@@ -61,6 +61,7 @@ class Comments extends Component {
   }
 
   render() {
+    console.log(this.state.comentarios)
     return (
       <View style={styles.container}>
         <View style={styles.box}>
@@ -77,24 +78,32 @@ class Comments extends Component {
               </Text>
 
               <FlatList
-                data={this.state.comentarios}
-                keyExtractor={(item) => item.createdAt.toString()}
-                renderItem={({ item }) => <TouchableOpacity onPress={() => this.props.navigation.navigate('Go Back', {user: item.ownerEmail})}><Text>{item.ownerUsername}: {item.description}</Text></TouchableOpacity> }/>
-                </>
-              }
-          
+                    data={this.state.comentarios.sort((a, b) => b.createdAt - a.createdAt)}
+                    keyExtractor={( item ) => item.createdAt.toString()}
+                    renderItem={({item}) => 
+                                <>
+                                    <View style={styles.comentarios}>
+                                        <TouchableOpacity style={styles.comentarios.boxOwner} onPress={() => this.props.navigation.navigate('Go Back', {user: item.owner})}>
+                                            <Text style={styles.comentarios.boxOwner.owner}>{item.owner}: </Text>
+                                        </TouchableOpacity> 
+                                        <Text style={styles.comentarios.texto}>{item.description}</Text>
+                                    </View>
+                                </>                  
+                            }/> 
+            </>
+          }
           <View style={styles.containerComm}>
-            <TextInput
-              style={styles.form}
-              keyboardType='default'
-              placeholder='Your comment!'
-              onChangeText={text => this.setState({ comment: text })}
-              value={this.state.comment} />
-            <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
-              <Text style={styles.textButton}>
-                Up Load
-              </Text>
-            </TouchableOpacity>
+              <TextInput
+                style={styles.commentsInput}
+                keyboardType='default'
+                placeholder='Your comment!'
+                onChangeText={ text => this.setState({comment:text}) }
+                value={this.state.comment} />
+              <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+                <Text style={styles.boton}>
+                  Up Load
+                </Text>
+              </TouchableOpacity>
           </View>
 
 
@@ -107,21 +116,22 @@ class Comments extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: 20
   },
-  box: {
-    border: '1px solid #5C0931',
-    marginVertical: 30,
-    width: '80%',
-    backgroundColor: 'white',
-    alignItems: 'center'
+  box:{
+    textAlign: 'center',
+    border: '1px solid #5c0931',
+    width: 400,
+    flex: 1,
+    backgroundColor: 'white'
   },
-  form: {
-    width: '90%',
+  form:{
+    width: 350,
     border: '1px solid #5c0931',
   },
-  text: {
-    fontSize: 20,
+  text:{
+    fontSize: 30,
     textAlign: 'center',
     marginVertical: 10
   },
@@ -140,7 +150,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 5,
     marginLeft: 8
-  }
+  },
+  cajacomentarios: {
+    alignItems: 'flex-start',
+},
+comentarios: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'flex-start',
+    padding: 5,
+    boxOwner: {
+        width: 'auto',
+        textAlign: 'start',
+        owner: {
+            fontWeight: 550,
+            fontSize: 20
+        }
+    },
+    texto: {
+        width: 'auto',
+        textAlign: 'start',
+        fontSize: 20
+    }
+},
+commentsInput: {
+  backgroundColor: '#CCCCCC',
+  borderWidth: 1,
+  borderColor: '#CCCCCC',
+  paddingLeft: 5,
+  marginRight: 10,
+  shadowOpacity: 20
+},
+boton: {
+  backgroundColor: '#5c0931',
+  color: 'white',
+  borderRadius: 3,
+  padding: 3,
+  alignSelf: 'center',
+  fontWeight: 'bold'
+}
 })
 
 export default Comments

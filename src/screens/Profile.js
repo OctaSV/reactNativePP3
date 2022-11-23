@@ -73,7 +73,7 @@ class Profile extends Component {
 
   deleteAcc() {
     const email = auth.currentUser.email
-     const password = this.state.password
+    const password = this.state.password
     
     const credential = firebase.auth.EmailAuthProvider.credential(
       email,
