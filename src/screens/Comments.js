@@ -5,85 +5,98 @@ import firebase from 'firebase'
 import { AntDesign } from '@expo/vector-icons';
 
 class Comments extends Component {
-    constructor(props){
-        super(props)
-        this.state={
-            comentarios: [],
-            comment:'',
-            commentCount: props.route.params.commentsData.length
-        }
+  constructor(props) {
+    super(props)
+    this.state = {
+      comentarios: [],
+      comment: '',
+      commentCount: props.route.params.commentsData.length
     }
+  }
 
-    componentDidMount(){
-      db.collection('posts')
-            .doc(this.props.route.params.id)
-            .onSnapshot(doc => {
-                this.setState({
-                    comentarios:doc.data().comments
-                })
-            })
-    }
-
-    comment(comentario){
-      const commentAGuardar ={
-        owner: auth.currentUser.email,
-        createdAt: Date.now(),
-        description: comentario
-    }
-
-        db.collection('posts').doc(this.props.route.params.id).update({
-            comments: firebase.firestore.FieldValue.arrayUnion(commentAGuardar)
+  componentDidMount() {
+    db.collection('posts')
+      .doc(this.props.route.params.id)
+      .onSnapshot(doc => {
+        this.setState({
+          comentarios: doc.data().comments
         })
-        .then(() => {
-            this.setState({
-                comment: '', 
-                commentCount: this.state.commentCount + 1
-            });
+      })
+    db.collection("users").where("email", '==', auth.currentUser.email).onSnapshot((docs) => {
+      let userLoguedInfo = [];
+      docs.forEach((doc) => {
+        userLoguedInfo.push({
+          data: doc.data()
         })
-        .catch(err => console.log(err))
+      });
+      this.setState({
+        userLoguedInfo: userLoguedInfo,
+      });
+    });
+  }
+
+  comment(comentario) {
+    const commentAGuardar = {
+      ownerUsername: this.state.userLoguedInfo[0]?.data.userName,
+      ownerEmail: auth.currentUser.email,
+      createdAt: Date.now(),
+      description: comentario
     }
 
-    volver(){
-      this.props.route.params.setCommentsCount(this.state.commentCount);
-      this.props.navigation.navigate('Home')
-    }
+    db.collection('posts').doc(this.props.route.params.id).update({
+      comments: firebase.firestore.FieldValue.arrayUnion(commentAGuardar)
+    })
+      .then(() => {
+        this.setState({
+          comment: '',
+          commentCount: this.state.commentCount + 1
+        });
+      })
+      .catch(err => console.log(err))
+  }
+
+  goBack(){
+    this.props.route.params.setCommentsCount(this.state.commentCount);
+    this.props.navigation.navigate('Home')
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.box}>
 
-            <TouchableOpacity stlye={styles.arrow} onPress={() => this.volver()}>
-              <AntDesign name="arrowleft" size={24} color="#5c0931" />
-            </TouchableOpacity>
+          <TouchableOpacity stlye={styles.arrow} onPress={() => this.goBack()}>
+            <AntDesign name="arrowleft" size={24} color="#5c0931" />
+          </TouchableOpacity>
 
-          {this.state.commentCount == 0 
-          ? <Text>No comments yet</Text> 
-          : <>
+          {this.state.commentCount == 0
+            ? <Text>No comments yet</Text>
+            : <>
               <Text style={styles.text}>
                 {this.state.commentCount} Comments
               </Text>
 
               <FlatList
-                    data={this.state.comentarios}
-                    keyExtractor={( item ) => item.createdAt.toString()}
-                    renderItem={({item}) => <Text>{item.owner}: {item.description}</Text>} /> 
-            </>
-          }
+                data={this.state.comentarios}
+                keyExtractor={(item) => item.createdAt.toString()}
+                renderItem={({ item }) => <TouchableOpacity onPress={() => this.props.navigation.navigate('Go Back', {user: item.ownerEmail})}><Text>{item.ownerUsername}: {item.description}</Text></TouchableOpacity> }/>
+                </>
+              }
+          
           <View style={styles.containerComm}>
-              <TextInput
-                style={styles.form}
-                keyboardType='default'
-                placeholder='Your comment!'
-                onChangeText={ text => this.setState({comment:text}) }
-                value={this.state.comment} />
-              <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
-                <Text style={styles.textButton}>
-                  Up Load
-                </Text>
-              </TouchableOpacity>
+            <TextInput
+              style={styles.form}
+              keyboardType='default'
+              placeholder='Your comment!'
+              onChangeText={text => this.setState({ comment: text })}
+              value={this.state.comment} />
+            <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+              <Text style={styles.textButton}>
+                Up Load
+              </Text>
+            </TouchableOpacity>
           </View>
-            
+
 
         </View>
       </View>
@@ -96,22 +109,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-  box:{
-    textAlign: 'center',
-    border: '1px solid #5c0931',
+  box: {
+    border: '1px solid #5C0931',
+    marginVertical: 30,
     width: '80%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    alignItems: 'center'
   },
-  form:{
+  form: {
     width: '90%',
     border: '1px solid #5c0931',
   },
-  text:{
+  text: {
     fontSize: 20,
     textAlign: 'center',
     marginVertical: 10
   },
-  textButton:{
+  textButton: {
     fontSize: 12,
     color: 'whitesmoke',
     backgroundColor: '#5c0931',
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 3
   },
-  containerComm:{
+  containerComm: {
     textAlign: 'center',
     flexDirection: 'row',
     width: '95%',
@@ -131,6 +145,3 @@ const styles = StyleSheet.create({
 
 export default Comments
 
-//TAREAS
-// 1. ORDENAR LOS COMENTARIOS
-// 2. ESTILOS

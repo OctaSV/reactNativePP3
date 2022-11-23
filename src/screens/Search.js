@@ -67,7 +67,7 @@ class Search extends Component {
                 <FlatList
                     data={this.state.filteredUsers}
                     keyExtractor={item => item.id.toString()}
-                    renderItem={({ item }) => <TouchableOpacity> <User navigation={this.props.navigation} user={item.data} />  </TouchableOpacity>}
+                    renderItem={({ item }) =>  <User navigation={this.props.navigation} user={item.data} />  }
                 />
             </View>
 
