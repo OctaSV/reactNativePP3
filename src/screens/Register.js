@@ -12,7 +12,6 @@ class Register extends Component{
             password: '',
             userName: '',
             biography: '',
-            urlAvatarNoBlob: '',
             urlAvatar: '',
             logued: false,
             emailIncomplete: false,
@@ -25,7 +24,7 @@ class Register extends Component{
 
     onImageUpload(image){
         this.setState({
-            urlAvatarNoBlob: image,
+            urlAvatar: image,
             useCam: false
         })
     }
@@ -36,21 +35,22 @@ class Register extends Component{
         })
     }
 
+    removeImage() {
+        this.setState({urlAvatar: ''})
+    } 
+
     savePhoto() {
-        fetch(this.state.urlAvatarNoBlob) // me permite acceder el contenido de un archivo
+        fetch(this.state.urlAvatar) // me permite acceder el contenido de un archivo
             .then(res => res.blob()) // el metodo blob me permite tener la representacion binaria de mi imagen         
             .then(image => {
                 const ref = storage.ref(`avatars/${Date.now()}.jpg`)
-                console.log(image)
                 ref.put(image) // subo a firebase el archivo
                 .then(() => {
                     ref.getDownloadURL()
-                        .then(url => {
-                            this.setState({
-                                urlAvatar: url
-                            })
-                        })
-                        .catch(e => console.log(e))
+                    .then(url => {
+                        this.onImageUpload(url)
+                    })
+                    .catch(e => console.log(e))
                 })
                 .catch(e => console.log(e))
             })
@@ -76,25 +76,28 @@ class Register extends Component{
         .then(() => (
             this.state.logued === true ? this.props.navigation.navigate('Login') : false    
         )) 
-        .catch(error => alert(`Cannot regist the user: ${error}`)
-        )
+        .catch(error => {
+            this.setState({errorMessage: error.message})
+        })
     }
 
     emailIncomplete(text){
          text === '' ?
             this.setState({
-                emailIncomplete: true
+                emailIncomplete: true,
+                errorMessage: 'Email incomplete.'
             })
         :
             this.setState({
-                emailIncomplete: false
+                emailIncomplete: false,
             })
     }
 
     passwordIncomplete(text){
         text === '' ?
            this.setState({
-               passwordIncomplete: true
+               passwordIncomplete: true,
+               errorMessage: 'Password incomplete.'
            })
        :
            this.setState({
@@ -105,7 +108,8 @@ class Register extends Component{
     userNameIncomplete(text){
     text === '' ?
        this.setState({
-            userNameIncomplete: true
+            userNameIncomplete: true,
+            errorMessage: 'Username incomplete.'
        })
    :
        this.setState({
@@ -120,7 +124,7 @@ class Register extends Component{
                     <View style={styles.titleBox}><Text style={styles.title}>FNTIC</Text></View>
                     <View style={styles.containerInfo}>
                         <View style={styles.avatarBox}>
-                            <Image style={styles.avatar} source={this.state.urlAvatarNoBlob === '' ? require('../../assets/logo.jpg') : {uri: this.state.urlAvatarNoBlob}}/>
+                            <Image style={styles.avatar} source={this.state.urlAvatar === '' ? require('../../assets/logo.jpg') : {uri: this.state.urlAvatar}}/>
                             {
                                 this.state.useCam === false ?
                                     <>
@@ -129,8 +133,16 @@ class Register extends Component{
                                     </>
                                 :
                                     <>
-                                            <MyCamera forRegister={true} onImageUpload={(url => this.onImageUpload(url))}/>
+                                        <MyCamera forRegister={true} onImageUpload={(url => this.onImageUpload(url))}/>
                                     </>
+                            }
+                            {
+                                this.state.urlAvatar ?
+                                    <TouchableOpacity style={styles.delete} onPress={() => this.removeImage()}>
+                                        <Text style={styles.delete.text}> Delete </Text> 
+                                    </TouchableOpacity>
+                                :
+                                    false
                             }
                         </View>
                         <View style={styles.formContainer}>
@@ -145,14 +157,14 @@ class Register extends Component{
                             this.state.email === '' || this.state.password === '' || this.state.userName === '' ?
                                 <View style={styles.submits}>
                                     <TouchableOpacity style={styles.notSubmitBox}>
-                                        <Text onPress={()=> alert('Complete with the obligatory information')}> Submit </Text>
+                                        <Text onPress={()=> (this.emailIncomplete(this.state.email), this.passwordIncomplete(this.state.password), this.userNameIncomplete(this.state.userName), this.setState({errorMessage: 'Complete with the obligatory information'}))}> Submit </Text>
                                     </TouchableOpacity> 
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}
                                 </View>
                             :
                                 <View style={styles.submits}> 
                                     <TouchableOpacity style={styles.submitBox} onPress={() => this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, this.state.urlAvatar)}>
-                                        <Text> Submit </Text>
+                                        <Text style={styles.submitBox.submitBoxText}> Submit </Text>
                                     </TouchableOpacity>
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}
                                 </View>     
@@ -224,9 +236,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     submitBox: {
-        padding: 5,
+        padding: 3,
         backgroundColor: '#5c0931',
-        borderRadius: 3
+        borderRadius: 3,
+        submitBoxText: {
+            color: 'whitesmoke'
+        }
     },
     notSubmitBox: {
         backgroundColor: 'lightgray',
@@ -258,11 +273,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
         marginBottom: 5
     },
-    deleteAvatar: {
-        padding: 3,
-        justifyContent: 'center',
+    delete: {
         backgroundColor: '#5c0931',
-        borderRadius: 3
+        padding: 10,
+        color: 'white',
+        borderRadius: 10,
+        marginBottom: 20,
+        text: {
+            color: 'whitesmoke'
+        }
     },
     camera: {
         flex: 3,

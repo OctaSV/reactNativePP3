@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Post from '../components/Post';
 import { StyleSheet, View, FlatList, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { db, auth } from '../firebase/Config'
+import Post from '../components/Post';
 
 class Home extends Component {
     constructor(props){
@@ -73,6 +73,6 @@ const styles = StyleSheet.create({
     activity: {
        marginTop: 250
     }
-})
+});
 
 export default Home;

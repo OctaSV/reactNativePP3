@@ -1,7 +1,7 @@
-import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
-import React, { Component } from 'react'
-import { db } from '../firebase/Config'
-import User from '../components/User'
+import React, { Component } from 'react';
+import { Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { db } from '../firebase/Config';
+import User from '../components/User';
 
 class Search extends Component {
     constructor(props) {
@@ -47,7 +47,6 @@ class Search extends Component {
     }
 
     render() {
-
         return (
             <View style={styles.padre}>
                 <Text style={styles.title}>Search for anybody</Text>
@@ -74,6 +73,7 @@ class Search extends Component {
         )
     }
 }
+
 const styles = StyleSheet.create({
     padre: {
         textAlign: 'center',
@@ -125,9 +125,6 @@ const styles = StyleSheet.create({
         fontSize: 35,
         fontWeight: 'bold'
     }
-    
+});
 
-})
-
-
-export default Search
+export default Search;

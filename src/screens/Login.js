@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { auth, GoogleProvider } from '../firebase/Config';
 import firebase from 'firebase';
-import {auth, GoogleProvider} from '../firebase/Config';
 
 class Login extends Component{
     constructor(props){
@@ -10,7 +10,8 @@ class Login extends Component{
             loader: true,
             email: '',
             password: '',
-            logued: false
+            logued: false,
+            errorMessage: ''
         }
     }
 
@@ -30,7 +31,7 @@ class Login extends Component{
         .then(() => (
             this.state.logued !== false ? this.props.navigation.navigate('Home') : false    
         ))
-        .catch(error => alert(error)) 
+        .catch(error => this.setState({errorMessage: error.message}))
     }
 
     signGoogle(){
@@ -69,15 +70,20 @@ class Login extends Component{
                                     <Text style={styles.title2}>FNATIC</Text>
                                 </View>
                                 <View style={styles.box2}>
-                                    <View style={styles.boxLog}>
-                                        <TextInput style={styles.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
-                                        <TextInput style={styles.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
-                                        <TouchableOpacity onPress={() => this.signIn(this.state.email, this.state.password)} >
-                                            <Text style={styles.submit}> Submit </Text>
+                                    <View style={styles.box2.boxLog}>
+                                        <TextInput style={styles.box2.boxLog.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
+                                        <TextInput style={styles.box2.boxLog.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
+                                        <TouchableOpacity style={styles.box2.boxLog.boxSubmit} onPress={() => this.signIn(this.state.email, this.state.password)} >
+                                            <Text style={styles.box2.boxLog.boxSubmit.submit}> Submit </Text>
                                         </TouchableOpacity>
-                                        <Text>{this.state.errorMessage}</Text>
+                                        {
+                                            this.state.errorMessage ?
+                                                <Text style={styles.box2.boxLog.errorMessage}>{this.state.errorMessage}</Text>
+                                            :
+                                                false
+                                        }
                                     </View>
-                                    <View style={styles.boxSubmit}>
+                                    <View style={styles.box2.boxLog.boxAdd}>
                                         <TouchableOpacity style={styles.google} onPress={() => this.signGoogle()}>                            
                                             <Text>Google</Text>
                                         </TouchableOpacity>
@@ -117,11 +123,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center'
     },
-    box2: {
-        flex: 7,
-        alignItems: 'center',
-        justifyContent: 'space-evenly'
-    },
     boxtitle2: {
         flex: 1.5,
         justifyContent: 'center'
@@ -132,32 +133,47 @@ const styles = StyleSheet.create({
         fontWeight: 350,
         color: '#5c0931'
     },
-    boxLog: {
-        flex: 4,
-        justifyContent: 'space-around',
-        textAlign: 'center'
-    },  
-    field: {
-        borderWidth: 1,
-        borderColor: '#CCCCCC',
-        color: '#535353',
-        borderRadius: 2,
-        paddingLeft: 10,
-        shadowOpacity: 20
-    },
-    boxSubmit: {
-        flex: 1,
+    box2: {
+        flex: 7,
+        width: '100%',
+        alignItems: 'center',
         justifyContent: 'space-evenly',
-        alignContent: 'center',
-        textAlign: 'center'
-    },
-    submit: {
-        padding: 10,
-        color: 'white',
-        backgroundColor: '#5c0931',
-        borderRadius: 10
+        boxLog: {
+            flex: 1,
+            width: '100%',
+            justifyContent: 'space-evenly',
+            textAlign: 'center',
+            alignItems:'center',
+            field: {
+                width: '80%',
+                borderWidth: 1,
+                borderColor: '#CCCCCC',
+                color: '#535353',
+                borderRadius: 1,
+                paddingLeft: 10,
+                shadowOpacity: 20
+            },
+            boxSubmit: {
+                width: '25%',
+                submit: {
+                    padding: 5,
+                    color: 'white',
+                    backgroundColor: '#5c0931',
+                    borderRadius: 5
+                }
+            },
+            errorMessage: {
+                color: 'red',
+                textAlign: 'center'
+            },
+            boxAdd: {
+                flex: 0.5,
+                justifyContent: 'space-evenly',
+                alignContent: 'center',
+                textAlign: 'center'
+            }
+        }
     }
-})
-
+});
 
 export default Login;
