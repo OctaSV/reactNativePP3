@@ -44,7 +44,7 @@ class Home extends Component {
                 : 
                     <View style={styles.container}>
                         {this.state.allPosts.length === 0 ? 
-                            <Text>Aun no hay posteos </Text>
+                            <Text>There is nothing yet...</Text>
                         :
                             <FlatList  
                             data={this.state.allPosts}

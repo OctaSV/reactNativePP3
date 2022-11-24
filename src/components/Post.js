@@ -19,9 +19,11 @@ class Post extends Component {
             productDescription: ''
         }
     }
+
     userProfile() {
         this.props.navigation.navigate('Go Back', { user: this.props.data.owner })
     }
+
     componentDidMount() {
         if (this.props.data.likes.includes(auth.currentUser.email)) {
             this.setState({
@@ -33,7 +35,7 @@ class Post extends Component {
             .onSnapshot(doc => {
                 this.setState({
                     comentarios: doc?.data()?.comments,
-                    productDescription: doc?.data().post
+                    productDescription: doc.data() !== undefined ? doc.data().post : false
                 })
         })
         db.collection("users").where("email", '==', this.props.data.owner).onSnapshot((docs) => {
@@ -59,6 +61,7 @@ class Post extends Component {
             });
         });
     }
+
     like() {
         db.collection('posts').doc(this.props.id).update({
             likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
@@ -71,6 +74,7 @@ class Post extends Component {
             })
             .catch(err => console.log(err))
     }
+
     dislike() {
         db.collection('posts').doc(this.props.id).update({
             likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
@@ -83,17 +87,20 @@ class Post extends Component {
             })
             .catch(err => console.log(err))
     }
+
     deletePost() {
         db.collection('posts').doc(this.props.id).delete()
     }
+
     setCommentsCount(num) {
         this.setState({
             commentsCount: num
         })
     }
+
     comment(comentario){
         if (comentario !== ''){
-            const commentAGuardar ={
+            const commentAGuardar = {
               ownerUsername: this.state.userLoguedInfo[0]?.data.userName,
               ownerEmail: auth.currentUser.email,
               createdAt: Date.now(),
@@ -113,9 +120,11 @@ class Post extends Component {
             false
         }
     }
+
     navegarComment(){
         this.props.navigation.navigate('Comments', {id: this.props.id, commentsData: this.props.data.comments, setCommentsCount: (num) => this.setCommentsCount(num)})
     }
+
     render() {
         return (
             <View style={styles.container}>
@@ -145,7 +154,7 @@ class Post extends Component {
                     :
                         <TouchableOpacity style={styles.imageBox} onPress={() => this.like()}>
                             <Image
-                                style={styles.imagen}
+                                style={styles.img}
                                 source={{uri:this.props.data.url}}
                                 resizeMode='cover'
                                 />
@@ -334,6 +343,7 @@ const styles = StyleSheet.create({
         padding: 5
     }
 });
+
 export default Post;
 
 

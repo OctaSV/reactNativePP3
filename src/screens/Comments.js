@@ -61,7 +61,6 @@ class Comments extends Component {
   }
 
   render() {
-    console.log(this.state.comentarios)
     return (
       <View style={styles.container}>
         <View style={styles.box}>
@@ -70,8 +69,8 @@ class Comments extends Component {
             <AntDesign name="arrowleft" size={24} color="#5c0931" />
           </TouchableOpacity>
 
-          {this.state.commentCount == 0
-            ? <Text>No comments yet</Text>
+          {this.state.commentCount == 0 ? 
+              <Text>No comments yet...</Text>
             : <>
               <Text style={styles.text}>
                 {this.state.commentCount} Comments
@@ -191,5 +190,5 @@ boton: {
 }
 })
 
-export default Comments
+export default Comments;
 

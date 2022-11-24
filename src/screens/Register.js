@@ -90,6 +90,7 @@ class Register extends Component{
         :
             this.setState({
                 emailIncomplete: false,
+                errorMessage: ''
             })
     }
 
@@ -99,22 +100,24 @@ class Register extends Component{
                passwordIncomplete: true,
                errorMessage: 'Password incomplete.'
            })
-       :
+        :
            this.setState({
-               passwordIncomplete: false
+               passwordIncomplete: false,
+               errorMessage: ''
            })
     }
 
     userNameIncomplete(text){
-    text === '' ?
-       this.setState({
-            userNameIncomplete: true,
-            errorMessage: 'Username incomplete.'
-       })
-   :
-       this.setState({
-           userNameIncomplete: false
-       })
+        text === '' ?
+        this.setState({
+                userNameIncomplete: true,
+                errorMessage: 'Username incomplete.'
+        })
+        :
+        this.setState({
+            userNameIncomplete: false,
+            errorMessage: ''
+        })
     }
 
     render(){
