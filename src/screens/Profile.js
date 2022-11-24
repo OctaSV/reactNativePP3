@@ -15,7 +15,8 @@ class Profile extends Component {
       loader: true,
       userEmail: '',
       password: '',
-      error: false
+      error: false,
+      input: false,
     }
   }
 
@@ -65,20 +66,22 @@ class Profile extends Component {
     this.props.navigation.navigate('Login')
   }
 
-  deleteAcc(){
+  deleteAcc() {
     const email = auth.currentUser.email
-    const password = this.state.userInfo[0]?.data.password
+    const password = this.state.password
     const credential = firebase.auth.EmailAuthProvider.credential(email, password);
 
-    if (confirm('Delete account?') == true) {
+    if (confirm('Are you sure?') == true) {
       auth.currentUser.reauthenticateWithCredential(credential)
-      .then(() => {
-        auth.currentUser.delete()
-        this.props.navigation.navigate('Login')
-      })
-      .catch((error) => {
-        console.log(error)
-      });
+        .then(() => {
+          auth.currentUser.delete()
+          this.props.navigation.navigate('Login')
+        })
+        .catch((error) => {
+          this.setState({
+            error: true
+          })
+        });
     } else {
       false
     }
@@ -88,43 +91,59 @@ class Profile extends Component {
     this.getUserData()
   }
 
-  render() { 
+  render() {
+
     return (
       <React.Fragment>
         {
           this.state.loader ?
             <ActivityIndicator styles={styles.activity} size='large' color='#535353' />
-          :
-              <View style={styles.container}>
-                <View style={styles.pageTitle}>
-                  {this.state.userEmail === auth.currentUser.email ?
-                    <View style={styles.outFunct}>
-                      <TouchableOpacity onPress={() => this.deleteAcc()}><Entypo name="trash" size={30} color="white" /></TouchableOpacity>
-                      <TouchableOpacity onPress={() => this.logOut()}><FontAwesome name="sign-out" size={30} color="white" /></TouchableOpacity>
-                    </View>
-                  :
-                    false
-                  }
-                  <Image source={this.state.userInfo[0]?.data.photo ? { uri: this.state.userInfo[0]?.data.photo } : require('../../assets/logo.jpg')} style={styles.imagen} />
-                  <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
-                  <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
-                </View>
-                {!this.state.userPosts.length !== 0 ?
-                  <FlatList
-                    data={this.state.userPosts}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <Post
-                      navigation={this.props.navigation}
-                      id={item.id}
-                      data={item.data}
-                      url={item.url} />
-                    } />
-                :
-                  <View style={styles.container}>
-                    <Text style={styles.nothingText}>There is nothing yet...</Text>
+            :
+            <View style={styles.container}>
+              <View style={styles.pageTitle}>
+                {this.state.userEmail === auth.currentUser.email ?
+                  <View style={styles.outFunct}>
+                    <TouchableOpacity onPress={() => this.setState({
+                      input: true
+                    })}><Entypo name="trash" size={30} color="white" /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.logOut()}><FontAwesome name="sign-out" size={30} color="white" /></TouchableOpacity>
                   </View>
+                  :
+                  false
                 }
+                {
+                  this.state.input ?
+                    <View style={styles.borrar}>
+                      <TextInput style={styles.field} keyboardType='default' placeholder='Put your password' secureTextEntry={true} onChangeText={text => this.setState({ password: text })} value={this.state.password} />
+                      <TouchableOpacity style={styles.submit} onPress={() => this.deleteAcc()} >
+                        <Text> Delete </Text>
+                      </TouchableOpacity>
+                    </View>
+                    : false
+                }
+                {
+                  this.state.error ? <Text style={styles.error}> Incorrect password. </Text> : false
+                }
+                <Image source={this.state.userInfo[0]?.data.photo ? { uri: this.state.userInfo[0]?.data.photo } : require('../../assets/logo.jpg')} style={styles.imagen} />
+                <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
+                <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
               </View>
+              {!this.state.userPosts.length !== 0 ?
+                <FlatList
+                  data={this.state.userPosts}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => <Post
+                    navigation={this.props.navigation}
+                    id={item.id}
+                    data={item.data}
+                    url={item.url} />
+                  } />
+                :
+                <View style={styles.container}>
+                  <Text style={styles.nothingText}>There is nothing yet...</Text>
+                </View>
+              }
+            </View>
         }
       </React.Fragment>
     )
@@ -148,7 +167,6 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-end',
     delete: {
-
     }
   },
   imagen: {
@@ -172,7 +190,7 @@ const styles = StyleSheet.create({
   },
   field: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    backgroundColor: 'white',
     color: '#535353',
     borderRadius: 2,
     paddingLeft: 10,
@@ -187,12 +205,20 @@ const styles = StyleSheet.create({
     marginLeft: 6
   },
   error: {
-    color: 'red'
+    color: 'red',
+    backgroundColor: 'grey',
+    borderRadius: 50,
+    marginBottom: 10
   },
   nothingText: {
     textAlign: 'center',
     color: '#5c0931',
     paddingVertical: 20
+  },
+  borrar: {
+  flexDirection: 'row',
+  marginBottom: 10,
+  justifyContent: 'flex-end'
   }
 })
 
