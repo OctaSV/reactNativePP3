@@ -5,6 +5,8 @@ import Search from '../screens/Search';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
+import { storage } from '../firebase/Config';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,8 +18,7 @@ function TabNavigation() {
                 component={Home}
                 options={{
                         tabBarIcon: () => <FontAwesome name="home" size={24} color="#5c0931" />,
-                        headerShown: false, tabBarActiveTintColor: 'red',
-                        tabBarInactiveTintColor: 'green' 
+                        headerShown: false
                     }}/>
             <Tab.Screen 
                 name="Profile"

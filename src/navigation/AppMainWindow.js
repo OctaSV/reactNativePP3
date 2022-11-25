@@ -9,18 +9,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
-function MainNavigation() {
+function AppMainWindow() {
     return (
       <NavigationContainer>
         <Stack.Navigator>
             <Stack.Screen name="Login" component={Login} options={ { headerShown: false } }/>
             <Stack.Screen name="Register" component={Register} options={ { headerShown: false } }/>
             <Stack.Screen name="TabNavigation" component={TabNavigation} options={ { headerShown: false } }/>
-            <Stack.Screen name="Comments" component={Comments} options={ { headerShown: false } }/>
+            <Stack.Screen name="Comments" component={Comments} />
             <Stack.Screen name="Go Back" component={Profile} />
         </Stack.Navigator>
       </NavigationContainer>
     )
 };
 
-export default MainNavigation;
+export default AppMainWindow;

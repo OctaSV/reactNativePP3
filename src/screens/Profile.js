@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, TextInput, ActivityIndicator, Button, Alert } from 'react-native'
+import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, TextInput, ActivityIndicator } from 'react-native'
 import { db, auth } from '../firebase/Config'
-import Post from '../components/Post';
 import { FontAwesome } from '@expo/vector-icons'
 import { Entypo } from '@expo/vector-icons';
 import firebase from 'firebase';
+import Post from '../components/Post';
 
 class Profile extends Component {
   constructor(props) {
@@ -48,7 +48,8 @@ class Profile extends Component {
         let userInfo = [];
         docs.forEach((doc) => {
           userInfo.push({
-            data: doc.data()
+            data: doc.data(),
+            id: doc.id
           })
         });
         this.setState({
@@ -78,10 +79,15 @@ class Profile extends Component {
           this.props.navigation.navigate('Login')
         })
         .catch((error) => {
+          console.log(error)
           this.setState({
             error: true
           })
         });
+        db.collection("users").doc(this.state.userInfo[0].id).delete()
+        this.state.userPosts.forEach((element)=> {
+        db.collection("posts").doc(element.id).delete()
+      })
     } else {
       false
     }
@@ -92,12 +98,11 @@ class Profile extends Component {
   }
 
   render() {
-
     return (
       <React.Fragment>
         {
           this.state.loader ?
-            <ActivityIndicator styles={styles.activity} size='large' color='#535353' />
+            <ActivityIndicator styles={styles.activity} size='large' color='#5c0931' />
             :
             <View style={styles.container}>
               <View style={styles.pageTitle}>
@@ -105,7 +110,9 @@ class Profile extends Component {
                   <View style={styles.outFunct}>
                     <TouchableOpacity onPress={() => this.setState({
                       input: true
-                    })}><Entypo name="trash" size={30} color="white" /></TouchableOpacity>
+                      })}>
+                      <Entypo name="trash" size={30} color="white" />
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.logOut()}><FontAwesome name="sign-out" size={30} color="white" /></TouchableOpacity>
                   </View>
                   :
@@ -128,7 +135,7 @@ class Profile extends Component {
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
                 <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
               </View>
-              {!this.state.userPosts.length !== 0 ?
+              {this.state.userPosts.length !== 0 ?
                 <FlatList
                   data={this.state.userPosts}
                   keyExtractor={(item) => item.id}

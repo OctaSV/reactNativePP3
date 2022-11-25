@@ -55,35 +55,26 @@ class Comments extends Component {
       .catch(err => console.log(err))
   }
 
-  goBack(){
-    this.props.route.params.setCommentsCount(this.state.commentCount);
-    this.props.navigation.navigate('Home')
-  }
-
   render() {
+
     return (
       <View style={styles.container}>
         <View style={styles.box}>
-
-          <TouchableOpacity stlye={styles.arrow} onPress={() => this.goBack()}>
-            <AntDesign name="arrowleft" size={24} color="#5c0931" />
-          </TouchableOpacity>
-
           {this.state.commentCount == 0 ? 
               <Text>No comments yet...</Text>
             : <>
-              <Text style={styles.text}>
-                {this.state.commentCount} Comments
+              <Text style={styles.cantComments}>
+                {this.state.commentCount} 
               </Text>
-
               <FlatList
+                    style={styles.flat}
                     data={this.state.comentarios.sort((a, b) => b.createdAt - a.createdAt)}
                     keyExtractor={( item ) => item.createdAt.toString()}
                     renderItem={({item}) => 
                                 <>
                                     <View style={styles.comentarios}>
-                                        <TouchableOpacity style={styles.comentarios.boxOwner} onPress={() => this.props.navigation.navigate('Go Back', {user: item.owner})}>
-                                            <Text style={styles.comentarios.boxOwner.owner}>{item.owner}: </Text>
+                                        <TouchableOpacity style={styles.comentarios.boxOwner} onPress={() => this.props.navigation.navigate('Go Back', {user: item.ownerEmail})}>
+                                            <Text style={styles.comentarios.boxOwner.owner}>{item.ownerUsername}: </Text>
                                         </TouchableOpacity> 
                                         <Text style={styles.comentarios.texto}>{item.description}</Text>
                                     </View>
@@ -121,73 +112,67 @@ const styles = StyleSheet.create({
   box:{
     textAlign: 'center',
     border: '1px solid #5c0931',
-    width: 400,
-    flex: 1,
+    width: '100%',
     backgroundColor: 'white'
   },
-  form:{
-    width: 350,
-    border: '1px solid #5c0931',
-  },
-  text:{
-    fontSize: 30,
+  cantComments:{
+    fontSize: 25,
     textAlign: 'center',
-    marginVertical: 10
+    marginVertical: 10,
+    color: '#5c0931'
   },
   textButton: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'whitesmoke',
     backgroundColor: '#5c0931',
     fontWeight: 'bold',
     width: '100%',
     padding: 3
   },
+  cajacomentarios: {
+    alignItems: 'flex-start',
+  },
+  comentarios: {
+      flexDirection: 'row',
+      width: '100%',
+      justifyContent: 'flex-start',
+      padding: 5,
+      boxOwner: {
+          width: 'auto',
+          textAlign: 'start',
+          owner: {
+              fontWeight: 550,
+              fontSize: 15
+          }
+      },
+      texto: {
+          width: 'auto',
+          textAlign: 'start',
+          fontSize: 15
+      }
+  },
   containerComm: {
     textAlign: 'center',
     flexDirection: 'row',
-    width: '95%',
     justifyContent: 'center',
-    marginVertical: 5,
-    marginLeft: 8
+    marginVertical: 10,
   },
-  cajacomentarios: {
-    alignItems: 'flex-start',
-},
-comentarios: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'flex-start',
-    padding: 5,
-    boxOwner: {
-        width: 'auto',
-        textAlign: 'start',
-        owner: {
-            fontWeight: 550,
-            fontSize: 20
-        }
-    },
-    texto: {
-        width: 'auto',
-        textAlign: 'start',
-        fontSize: 20
-    }
-},
-commentsInput: {
-  backgroundColor: '#CCCCCC',
-  borderWidth: 1,
-  borderColor: '#CCCCCC',
-  paddingLeft: 5,
-  marginRight: 10,
-  shadowOpacity: 20
-},
-boton: {
-  backgroundColor: '#5c0931',
-  color: 'white',
-  borderRadius: 3,
-  padding: 3,
-  alignSelf: 'center',
-  fontWeight: 'bold'
-}
+  commentsInput: {
+    backgroundColor: '#CCCCCC',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    paddingLeft: 5,
+    marginRight: 5,
+    shadowOpacity: 20
+  },
+  boton: {
+    backgroundColor: '#5c0931',
+    color: 'white',
+    borderRadius: 3,
+    padding: 3,
+    alignSelf: 'center',
+    fontWeight: 'bold'
+  }
 })
 
 export default Comments;

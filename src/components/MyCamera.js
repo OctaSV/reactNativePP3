@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Camera } from 'expo-camera';
-import { storage } from '../firebase/Config';
 import { Ionicons } from '@expo/vector-icons';
 
 class MyCamera extends Component {
     constructor(props){
         super(props)
         this.state = {
-            permission:false,
-            mostrarCamara:true,
+            permission: false,
+            mostrarCamara: true,
             urlFoto:''
         }
     }
@@ -32,24 +31,6 @@ class MyCamera extends Component {
             })
             this.props.onImageUpload(image.uri)
         })
-        .catch(error =>console.log(error))
-    }
-
-    savePostPicture(){
-        fetch(this.state.urlFoto)
-        .then(response => response.blob())
-        .then(image => {
-            const ref = storage.ref(`photos/${Date.now()}.jpg`)
-            ref.put(image)
-            .then(() =>{
-                ref.getDownloadURL()
-                .then(url => this.props.onImageUpload(url))
-                .catch(error => console.log(error))
-            }
-            )
-            .catch(error => console.log(error))
-        }
-        )
         .catch(error => console.log(error))
     }
 

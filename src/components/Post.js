@@ -89,7 +89,11 @@ class Post extends Component {
     }
 
     deletePost() {
-        db.collection('posts').doc(this.props.id).delete()
+        if (confirm('Delete post') === true){
+            db.collection('posts').doc(this.props.id).delete()
+        } else {
+            false
+        }
     }
 
     setCommentsCount(num) {

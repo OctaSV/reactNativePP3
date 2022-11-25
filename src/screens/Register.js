@@ -172,7 +172,7 @@ class Register extends Component{
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}
                                 </View>     
                         }
-                        <TouchableOpacity onPress={()=> this.props.navigation.pop()}>
+                        <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
                             <Text>You already have an account?</Text>
                         </TouchableOpacity>
                     </View>
