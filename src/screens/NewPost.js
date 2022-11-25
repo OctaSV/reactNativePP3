@@ -54,8 +54,8 @@ class NewPost extends Component {
       comments: []
     })
     .then(() => {
+      this.setState({compCamara: false, posteo: ''})
       this.props.navigation.goBack()
-      this.setState({compCamara: false})
     })
     .catch (err => console.log(err))
   }

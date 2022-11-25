@@ -73,9 +73,16 @@ class Login extends Component{
                                     <View style={styles.box2.boxLog}>
                                         <TextInput style={styles.box2.boxLog.field} keyboardType='email-address' placeholder='email' onChangeText={ text => this.setState({email: text}) }/>
                                         <TextInput style={styles.box2.boxLog.field} keyboardType='default' placeholder='password' secureTextEntry={true} onChangeText={ text => this.setState({password: text}) }/>
-                                        <TouchableOpacity style={styles.box2.boxLog.boxSubmit} onPress={() => this.signIn(this.state.email, this.state.password)} >
-                                            <Text style={styles.box2.boxLog.boxSubmit.submit}> Submit </Text>
-                                        </TouchableOpacity>
+                                        {
+                                            this.state.password === '' || this.state.email === '' ?
+                                                <TouchableOpacity style={styles.box2.boxLog.boxSubmit} onPress={() => this.setState({errorMessage: 'Incomplete field'})} >
+                                                    <Text style={styles.box2.boxLog.boxSubmit.notSubmit}> Submit </Text>
+                                                </TouchableOpacity>
+                                            :
+                                                <TouchableOpacity style={styles.box2.boxLog.boxSubmit} onPress={() => this.signIn(this.state.email, this.state.password)} >
+                                                    <Text style={styles.box2.boxLog.boxSubmit.submit}> Submit </Text>
+                                                </TouchableOpacity>
+                                        }
                                         {
                                             this.state.errorMessage ?
                                                 <Text style={styles.box2.boxLog.errorMessage}>{this.state.errorMessage}</Text>
@@ -159,6 +166,12 @@ const styles = StyleSheet.create({
                     padding: 5,
                     color: 'white',
                     backgroundColor: '#5c0931',
+                    borderRadius: 5
+                },
+                notSubmit: {
+                    padding: 5,
+                    color: 'black',
+                    backgroundColor: 'lightgray',
                     borderRadius: 5
                 }
             },

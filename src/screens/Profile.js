@@ -98,6 +98,7 @@ class Profile extends Component {
   }
 
   render() {
+    console.log(this.state.userPosts);
     return (
       <React.Fragment>
         {
@@ -134,6 +135,8 @@ class Profile extends Component {
                 <Image source={this.state.userInfo[0]?.data.photo ? { uri: this.state.userInfo[0]?.data.photo } : require('../../assets/logo.jpg')} style={styles.imagen} />
                 <Text style={styles.texto}>{this.state.userInfo[0]?.data.userName}</Text>
                 <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.biography}</Text>
+                <Text style={styles.texto.bio}>{this.state.userInfo[0]?.data.email}</Text>
+                <Text style={styles.texto.bio}>Posts: {this.state.userPosts.length}</Text>
               </View>
               {this.state.userPosts.length !== 0 ?
                 <FlatList
