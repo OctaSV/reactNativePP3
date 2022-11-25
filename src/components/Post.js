@@ -196,7 +196,7 @@ class Post extends Component {
                     <View>
                         <FlatList
                                 style={styles.list}
-                                data={this.state.comentarios.slice(0,4)}
+                                data={this.state.comentarios.sort((a, b) => b.createdAt - a.createdAt).slice(0,4)}
                                 keyExtractor={( item ) => item.createdAt.toString()}
                                 renderItem={({item}) =>
                                     <>

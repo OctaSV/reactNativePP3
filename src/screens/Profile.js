@@ -76,7 +76,6 @@ class Profile extends Component {
       auth.currentUser.reauthenticateWithCredential(credential)
         .then(() => {
           auth.currentUser.delete()
-          this.props.navigation.navigate('Login')
         })
         .catch((error) => {
           console.log(error)
@@ -87,6 +86,7 @@ class Profile extends Component {
         db.collection("users").doc(this.state.userInfo[0].id).delete()
         this.state.userPosts.forEach((element)=> {
         db.collection("posts").doc(element.id).delete()
+        this.props.navigation.navigate('Login')
       })
     } else {
       false
