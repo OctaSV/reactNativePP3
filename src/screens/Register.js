@@ -13,6 +13,7 @@ class Register extends Component{
             userName: '',
             biography: '',
             urlAvatar: '',
+            urlAvatarDownload: '',
             logued: false,
             emailIncomplete: false,
             passwordIncomplete: false,
@@ -20,6 +21,10 @@ class Register extends Component{
             useCam: false,
             errorMessage: ''
         }
+    }
+
+    componentDidMount(){
+        console.log('hola');
     }
 
     onImageUpload(image){
@@ -43,12 +48,16 @@ class Register extends Component{
         fetch(this.state.urlAvatar) // me permite acceder el contenido de un archivo
             .then(res => res.blob()) // el metodo blob me permite tener la representacion binaria de mi imagen         
             .then(image => {
-                const ref = storage.ref(`avatars/${Date.now()}.jpg`)
-                ref.put(image) // subo a firebase el archivo
+                auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then(() => {
-                    ref.getDownloadURL()
-                    .then(url => {
-                        this.onImageUpload(url)
+                    const ref = storage.ref(`avatars/${Date.now()}.jpg`)
+                    ref.put(image) // subo a firebase el archivo
+                    .then(() => {
+                        ref.getDownloadURL()
+                        .then(url => {
+                            this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, url)
+                        })
+                        .catch(e => console.log(e))
                     })
                     .catch(e => console.log(e))
                 })
@@ -57,18 +66,14 @@ class Register extends Component{
             .catch(e => console.log(e))
     }
 
-    signUp(email, password, userName, biography){
-        auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            this.savePhoto()
-            db.collection('users').add({
-                email: email,
-                password: password,
-                userName: userName,
-                biography: biography, 
-                photo: this.state.urlAvatar,
-                createdAt: Date.now()
-            }) 
+    signUp(email, password, userName, biography, url){
+        db.collection('users').add({
+            email: email,
+            password: password,
+            userName: userName,
+            biography: biography, 
+            photo: url,
+            createdAt: Date.now()
         })
         .then(() => {
             this.setState({logued: true})
@@ -166,7 +171,7 @@ class Register extends Component{
                                 </View>
                             :
                                 <View style={styles.submits}> 
-                                    <TouchableOpacity style={styles.submitBox} onPress={() => this.signUp(this.state.email, this.state.password, this.state.userName, this.state.biography, this.state.urlAvatar)}>
+                                    <TouchableOpacity style={styles.submitBox} onPress={() => this.savePhoto()}>
                                         <Text style={styles.submitBox.submitBoxText}> Submit </Text>
                                     </TouchableOpacity>
                                     {this.state.errorMessage ? <Text style={styles.error}>{this.state.errorMessage}</Text> : false}

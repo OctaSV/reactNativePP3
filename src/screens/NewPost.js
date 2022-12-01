@@ -10,6 +10,7 @@ class NewPost extends Component {
     this.state={
         posteo:'',
         urlFoto: '',
+        urlFotoDownload: '',
         compCamara: true
     }
   }
@@ -19,7 +20,7 @@ class NewPost extends Component {
   }
 
   onImageUpload(url){
-    this.savePostPhoto(url)
+    this.setState({urlFoto: url, compCamara: false})
   }
 
   savePostPhoto(url){
@@ -31,10 +32,7 @@ class NewPost extends Component {
         .then(() => {
           ref.getDownloadURL()
           .then(url => {
-            this.setState({
-              urlFoto: url,
-              compCamara: false
-            })
+            this.newPost(this.state.posteo, url)
           })
           .catch(error => console.log(error))
         })
@@ -43,12 +41,11 @@ class NewPost extends Component {
     .catch(error => console.log(error))
   }
 
-  newPost(posteo, urlFoto){
-    this.savePostPhoto()
+  newPost(posteo, urlFotoDownload){
     db.collection('posts').add({
       owner: auth.currentUser.email,
       post: posteo,
-      url: urlFoto,
+      url: urlFotoDownload,
       createdAt: Date.now(),
       likes:[],
       comments: []
@@ -88,7 +85,7 @@ class NewPost extends Component {
             placeholder='Post description'
             onChangeText={ text => this.setState({posteo:text}) }
             value={this.state.posteo} />
-            <TouchableOpacity style={styles.text} onPress={() => this.newPost(this.state.posteo, this.state.urlFoto)}>
+            <TouchableOpacity style={styles.text} onPress={() => this.savePostPhoto(this.state.urlFoto)}>
               <Text style={styles.text}>Send to FNATIC</Text>
             </TouchableOpacity>
           </View>

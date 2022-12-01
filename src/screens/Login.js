@@ -27,10 +27,10 @@ class Login extends Component{
             this.setState({
                 logued: true
             })
+            if (this.state.logued) {
+                this.props.navigation.navigate('Home')
+            }
         })
-        .then(() => (
-            this.state.logued !== false ? this.props.navigation.navigate('Home') : false    
-        ))
         .catch(error => this.setState({errorMessage: error.message}))
     }
 
